@@ -1,0 +1,374 @@
+[
+  {
+    "model": "security.permiso",
+    "pk": 1,
+    "fields": {
+      "codigo": "core.empresa.ver",
+      "nombre": "Ver empresas",
+      "modulo": "core",
+      "documento_tipo": null,
+      "descripcion": "Consultar datos de empresas.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 2,
+    "fields": {
+      "codigo": "core.empresa.editar",
+      "nombre": "Editar empresas",
+      "modulo": "core",
+      "documento_tipo": null,
+      "descripcion": "Crear y modificar empresas.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 3,
+    "fields": {
+      "codigo": "core.bodega.ver",
+      "nombre": "Ver bodegas",
+      "modulo": "core",
+      "documento_tipo": null,
+      "descripcion": "Consultar bodegas y sucursales.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 4,
+    "fields": {
+      "codigo": "core.bodega.editar",
+      "nombre": "Editar bodegas",
+      "modulo": "core",
+      "documento_tipo": null,
+      "descripcion": "Crear y modificar bodegas y sucursales.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 5,
+    "fields": {
+      "codigo": "core.parametro.editar",
+      "nombre": "Editar parámetros de empresa",
+      "modulo": "core",
+      "documento_tipo": null,
+      "descripcion": "Modificar parámetros operativos de la empresa.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 6,
+    "fields": {
+      "codigo": "security.usuario.ver",
+      "nombre": "Ver usuarios",
+      "modulo": "security",
+      "documento_tipo": null,
+      "descripcion": "Consultar usuarios del sistema.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 7,
+    "fields": {
+      "codigo": "security.usuario.editar",
+      "nombre": "Editar usuarios",
+      "modulo": "security",
+      "documento_tipo": null,
+      "descripcion": "Crear y modificar usuarios.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 8,
+    "fields": {
+      "codigo": "security.rol.editar",
+      "nombre": "Editar roles y permisos",
+      "modulo": "security",
+      "documento_tipo": null,
+      "descripcion": "Administrar roles y asignación de permisos.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 9,
+    "fields": {
+      "codigo": "catalogs.ver",
+      "nombre": "Ver catálogos",
+      "modulo": "catalogs",
+      "documento_tipo": null,
+      "descripcion": "Consultar catálogos maestros.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 10,
+    "fields": {
+      "codigo": "catalogs.editar",
+      "nombre": "Editar catálogos",
+      "modulo": "catalogs",
+      "documento_tipo": null,
+      "descripcion": "Crear y modificar catálogos maestros.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 11,
+    "fields": {
+      "codigo": "inventory.producto.ver",
+      "nombre": "Ver productos",
+      "modulo": "inventory",
+      "documento_tipo": null,
+      "descripcion": "Consultar productos.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 12,
+    "fields": {
+      "codigo": "inventory.producto.editar",
+      "nombre": "Editar productos",
+      "modulo": "inventory",
+      "documento_tipo": null,
+      "descripcion": "Crear y modificar productos.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 13,
+    "fields": {
+      "codigo": "inventory.stock.ver",
+      "nombre": "Ver stock y kardex",
+      "modulo": "inventory",
+      "documento_tipo": null,
+      "descripcion": "Consultar existencias y movimientos.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 14,
+    "fields": {
+      "codigo": "inventory.movimiento.ver",
+      "nombre": "Ver movimientos",
+      "modulo": "inventory",
+      "documento_tipo": null,
+      "descripcion": "Consultar movimientos de inventario.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 15,
+    "fields": {
+      "codigo": "inventory.proveedor.editar",
+      "nombre": "Editar proveedores",
+      "modulo": "inventory",
+      "documento_tipo": null,
+      "descripcion": "Crear y modificar proveedores.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 16,
+    "fields": {
+      "codigo": "inventory.override_stock_negativo",
+      "nombre": "Forzar salida sin stock",
+      "modulo": "inventory",
+      "documento_tipo": null,
+      "descripcion": "Permitir salidas que dejen stock negativo con auditoría.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 17,
+    "fields": {
+      "codigo": "inventory.aprobar_ajuste",
+      "nombre": "Aprobar ajustes de inventario",
+      "modulo": "inventory",
+      "documento_tipo": "AJUSTE",
+      "descripcion": "Aprobar o rechazar ajustes de inventario físico.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 18,
+    "fields": {
+      "codigo": "operations.solicitud.crear",
+      "nombre": "Crear solicitudes",
+      "modulo": "operations",
+      "documento_tipo": "SOLICITUD",
+      "descripcion": "Crear solicitudes internas de salida.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 19,
+    "fields": {
+      "codigo": "operations.solicitud.aprobar",
+      "nombre": "Aprobar solicitudes",
+      "modulo": "operations",
+      "documento_tipo": "SOLICITUD",
+      "descripcion": "Aprobar o rechazar solicitudes.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 20,
+    "fields": {
+      "codigo": "operations.entrega.crear",
+      "nombre": "Crear y ejecutar entregas",
+      "modulo": "operations",
+      "documento_tipo": "ENTREGA",
+      "descripcion": "Crear y ejecutar entregas de material.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 21,
+    "fields": {
+      "codigo": "operations.entrega.aprobar",
+      "nombre": "Aprobar entregas ad-hoc",
+      "modulo": "operations",
+      "documento_tipo": "ENTREGA",
+      "descripcion": "Aprobar entregas sin solicitud previa.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 22,
+    "fields": {
+      "codigo": "operations.traslado.crear",
+      "nombre": "Crear traslados",
+      "modulo": "operations",
+      "documento_tipo": "TRASLADO",
+      "descripcion": "Crear traslados entre bodegas.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 23,
+    "fields": {
+      "codigo": "operations.traslado.aprobar",
+      "nombre": "Aprobar traslados",
+      "modulo": "operations",
+      "documento_tipo": "TRASLADO",
+      "descripcion": "Aprobar o rechazar traslados.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 24,
+    "fields": {
+      "codigo": "operations.traslado.despachar",
+      "nombre": "Despachar traslados",
+      "modulo": "operations",
+      "documento_tipo": "TRASLADO",
+      "descripcion": "Despachar traslados a estado en tránsito.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 25,
+    "fields": {
+      "codigo": "operations.traslado.recibir",
+      "nombre": "Recibir traslados",
+      "modulo": "operations",
+      "documento_tipo": "TRASLADO",
+      "descripcion": "Confirmar recepción de traslados en bodega destino.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 26,
+    "fields": {
+      "codigo": "operations.compra.crear",
+      "nombre": "Crear compras",
+      "modulo": "operations",
+      "documento_tipo": "COMPRA",
+      "descripcion": "Crear documentos de compra.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 27,
+    "fields": {
+      "codigo": "operations.compra.aprobar",
+      "nombre": "Aprobar compras",
+      "modulo": "operations",
+      "documento_tipo": "COMPRA",
+      "descripcion": "Aprobar o rechazar compras.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 28,
+    "fields": {
+      "codigo": "operations.compra.confirmar",
+      "nombre": "Confirmar recepción de compras",
+      "modulo": "operations",
+      "documento_tipo": "COMPRA",
+      "descripcion": "Confirmar recepción y generar entradas de inventario.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 29,
+    "fields": {
+      "codigo": "operations.documento.anular",
+      "nombre": "Anular documentos",
+      "modulo": "operations",
+      "documento_tipo": null,
+      "descripcion": "Anular documentos operativos según reglas de negocio.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 30,
+    "fields": {
+      "codigo": "support.adjunto.subir",
+      "nombre": "Subir adjuntos",
+      "modulo": "support",
+      "documento_tipo": null,
+      "descripcion": "Adjuntar archivos a documentos.",
+      "activo": true
+    }
+  },
+  {
+    "model": "security.permiso",
+    "pk": 31,
+    "fields": {
+      "codigo": "support.numerador.editar",
+      "nombre": "Editar numeradores",
+      "modulo": "support",
+      "documento_tipo": null,
+      "descripcion": "Configurar numeración de documentos por empresa.",
+      "activo": true
+    }
+  }
+]
