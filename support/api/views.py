@@ -49,9 +49,19 @@ class NumeradorViewSet(APIViewMixin, viewsets.ModelViewSet):
 
 class AdjuntoViewSet(APIViewMixin, viewsets.ModelViewSet):
     serializer_class = AdjuntoSerializer
-    queryset = Adjunto.objects.all().order_by('-created_at')
+    queryset = Adjunto.objects.select_related('subido_por').order_by('-created_at')
     filterset_class = AdjuntoFilter
     search_fields = ['nombre_archivo', 'modulo', 'documento_id']
     ordering_fields = ['created_at', 'nombre_archivo']
     ordering = ['-created_at']
     rbac_permissions = permiso_crud('support.adjunto.subir', 'support.adjunto.subir')
+
+    def perform_create(self, serializer):
+        empresa_id = self.get_empresa_id()
+        modulo = serializer.validated_data['modulo']
+        nombre = serializer.validated_data['nombre_archivo']
+        serializer.save(
+            empresa_id=empresa_id,
+            ruta_archivo=f'adjuntos/{empresa_id}/{modulo}/{nombre}',
+            subido_por=self.request.user,
+        )

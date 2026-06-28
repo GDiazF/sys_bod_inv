@@ -16,21 +16,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenObtainPairRequest'
+              $ref: '#/components/schemas/ActivoTokenObtainPairRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TokenObtainPairRequest'
+              $ref: '#/components/schemas/ActivoTokenObtainPairRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TokenObtainPairRequest'
+              $ref: '#/components/schemas/ActivoTokenObtainPairRequest'
         required: true
       responses:
         '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TokenObtainPair'
-          description: ''
+          description: No response body
   /api/v1/auth/token/refresh/:
     post:
       operationId: auth_token_refresh_create
@@ -43,24 +39,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenRefreshRequest'
+              $ref: '#/components/schemas/ActivoTokenRefreshRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TokenRefreshRequest'
+              $ref: '#/components/schemas/ActivoTokenRefreshRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TokenRefreshRequest'
+              $ref: '#/components/schemas/ActivoTokenRefreshRequest'
         required: true
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TokenRefresh'
+                $ref: '#/components/schemas/ActivoTokenRefresh'
           description: ''
   /api/v1/catalogs/categorias/:
     get:
       operationId: catalogs_categorias_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: query
         name: activa
@@ -103,6 +100,7 @@ paths:
           description: ''
     post:
       operationId: catalogs_categorias_create
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       tags:
       - catalogs
       requestBody:
@@ -129,6 +127,7 @@ paths:
   /api/v1/catalogs/categorias/{id}/:
     get:
       operationId: catalogs_categorias_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -149,6 +148,7 @@ paths:
           description: ''
     put:
       operationId: catalogs_categorias_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -181,6 +181,7 @@ paths:
           description: ''
     patch:
       operationId: catalogs_categorias_partial_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -212,6 +213,7 @@ paths:
           description: ''
     delete:
       operationId: catalogs_categorias_destroy
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -229,6 +231,7 @@ paths:
   /api/v1/catalogs/estados-documento/:
     get:
       operationId: catalogs_estados_documento_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - name: ordering
         required: false
@@ -268,6 +271,7 @@ paths:
   /api/v1/catalogs/estados-documento/{id}/:
     get:
       operationId: catalogs_estados_documento_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -289,6 +293,7 @@ paths:
   /api/v1/catalogs/estados-serie/:
     get:
       operationId: catalogs_estados_serie_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - name: ordering
         required: false
@@ -328,6 +333,7 @@ paths:
   /api/v1/catalogs/estados-serie/{id}/:
     get:
       operationId: catalogs_estados_serie_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -349,6 +355,7 @@ paths:
   /api/v1/catalogs/marcas/:
     get:
       operationId: catalogs_marcas_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: query
         name: activa
@@ -391,6 +398,7 @@ paths:
           description: ''
     post:
       operationId: catalogs_marcas_create
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       tags:
       - catalogs
       requestBody:
@@ -417,6 +425,7 @@ paths:
   /api/v1/catalogs/marcas/{id}/:
     get:
       operationId: catalogs_marcas_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -437,6 +446,7 @@ paths:
           description: ''
     put:
       operationId: catalogs_marcas_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -469,6 +479,7 @@ paths:
           description: ''
     patch:
       operationId: catalogs_marcas_partial_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -500,6 +511,7 @@ paths:
           description: ''
     delete:
       operationId: catalogs_marcas_destroy
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -517,6 +529,7 @@ paths:
   /api/v1/catalogs/metodos-costeo/:
     get:
       operationId: catalogs_metodos_costeo_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - name: ordering
         required: false
@@ -556,6 +569,7 @@ paths:
   /api/v1/catalogs/metodos-costeo/{id}/:
     get:
       operationId: catalogs_metodos_costeo_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -577,6 +591,7 @@ paths:
   /api/v1/catalogs/tipos-control/:
     get:
       operationId: catalogs_tipos_control_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - name: ordering
         required: false
@@ -616,6 +631,7 @@ paths:
   /api/v1/catalogs/tipos-control/{id}/:
     get:
       operationId: catalogs_tipos_control_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -638,6 +654,7 @@ paths:
   /api/v1/catalogs/tipos-movimiento/:
     get:
       operationId: catalogs_tipos_movimiento_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - name: ordering
         required: false
@@ -677,6 +694,7 @@ paths:
   /api/v1/catalogs/tipos-movimiento/{id}/:
     get:
       operationId: catalogs_tipos_movimiento_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -699,6 +717,7 @@ paths:
   /api/v1/catalogs/unidades-medida/:
     get:
       operationId: catalogs_unidades_medida_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: query
         name: activa
@@ -741,6 +760,7 @@ paths:
           description: ''
     post:
       operationId: catalogs_unidades_medida_create
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       tags:
       - catalogs
       requestBody:
@@ -767,6 +787,7 @@ paths:
   /api/v1/catalogs/unidades-medida/{id}/:
     get:
       operationId: catalogs_unidades_medida_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -787,6 +808,7 @@ paths:
           description: ''
     put:
       operationId: catalogs_unidades_medida_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -819,6 +841,7 @@ paths:
           description: ''
     patch:
       operationId: catalogs_unidades_medida_partial_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -850,6 +873,7 @@ paths:
           description: ''
     delete:
       operationId: catalogs_unidades_medida_destroy
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -867,6 +891,7 @@ paths:
   /api/v1/core/bodegas/:
     get:
       operationId: core_bodegas_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: query
         name: activa
@@ -921,6 +946,7 @@ paths:
           description: ''
     post:
       operationId: core_bodegas_create
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       tags:
       - core
       requestBody:
@@ -947,6 +973,7 @@ paths:
   /api/v1/core/bodegas/{id}/:
     get:
       operationId: core_bodegas_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -967,6 +994,7 @@ paths:
           description: ''
     put:
       operationId: core_bodegas_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -999,6 +1027,7 @@ paths:
           description: ''
     patch:
       operationId: core_bodegas_partial_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -1030,6 +1059,7 @@ paths:
           description: ''
     delete:
       operationId: core_bodegas_destroy
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -1047,6 +1077,7 @@ paths:
   /api/v1/core/centros-costo/:
     get:
       operationId: core_centros_costo_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: query
         name: activo
@@ -1076,10 +1107,6 @@ paths:
         description: Un término de búsqueda.
         schema:
           type: string
-      - in: query
-        name: tipo
-        schema:
-          type: string
       tags:
       - core
       security:
@@ -1093,6 +1120,7 @@ paths:
           description: ''
     post:
       operationId: core_centros_costo_create
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       tags:
       - core
       requestBody:
@@ -1119,6 +1147,7 @@ paths:
   /api/v1/core/centros-costo/{id}/:
     get:
       operationId: core_centros_costo_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -1139,6 +1168,7 @@ paths:
           description: ''
     put:
       operationId: core_centros_costo_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -1171,6 +1201,7 @@ paths:
           description: ''
     patch:
       operationId: core_centros_costo_partial_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -1202,6 +1233,7 @@ paths:
           description: ''
     delete:
       operationId: core_centros_costo_destroy
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -1319,6 +1351,7 @@ paths:
   /api/v1/core/sucursales/:
     get:
       operationId: core_sucursales_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: query
         name: activa
@@ -1361,6 +1394,7 @@ paths:
           description: ''
     post:
       operationId: core_sucursales_create
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       tags:
       - core
       requestBody:
@@ -1387,6 +1421,7 @@ paths:
   /api/v1/core/sucursales/{id}/:
     get:
       operationId: core_sucursales_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -1407,6 +1442,7 @@ paths:
           description: ''
     put:
       operationId: core_sucursales_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -1439,6 +1475,7 @@ paths:
           description: ''
     patch:
       operationId: core_sucursales_partial_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -1470,6 +1507,7 @@ paths:
           description: ''
     delete:
       operationId: core_sucursales_destroy
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -1487,6 +1525,7 @@ paths:
   /api/v1/inventory/movimientos/:
     get:
       operationId: inventory_movimientos_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: query
         name: anulado
@@ -1501,12 +1540,12 @@ paths:
         schema:
           type: number
       - in: query
-        name: fecha_desde
+        name: created_at_desde
         schema:
           type: string
           format: date-time
       - in: query
-        name: fecha_hasta
+        name: created_at_hasta
         schema:
           type: string
           format: date-time
@@ -1545,7 +1584,7 @@ paths:
       - in: query
         name: tipo_movimiento
         schema:
-          type: string
+          type: number
       tags:
       - inventory
       security:
@@ -1560,6 +1599,7 @@ paths:
   /api/v1/inventory/movimientos/{id}/:
     get:
       operationId: inventory_movimientos_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -1581,6 +1621,7 @@ paths:
   /api/v1/inventory/productos/:
     get:
       operationId: inventory_productos_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: query
         name: activo
@@ -1623,7 +1664,7 @@ paths:
         schema:
           type: string
       - in: query
-        name: tipo_control
+        name: tipo_control_inventario
         schema:
           type: number
       tags:
@@ -1639,6 +1680,7 @@ paths:
           description: ''
     post:
       operationId: inventory_productos_create
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       tags:
       - inventory
       requestBody:
@@ -1665,6 +1707,7 @@ paths:
   /api/v1/inventory/productos/{id}/:
     get:
       operationId: inventory_productos_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -1685,6 +1728,7 @@ paths:
           description: ''
     put:
       operationId: inventory_productos_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -1717,6 +1761,7 @@ paths:
           description: ''
     patch:
       operationId: inventory_productos_partial_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -1748,6 +1793,7 @@ paths:
           description: ''
     delete:
       operationId: inventory_productos_destroy
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -1765,6 +1811,7 @@ paths:
   /api/v1/inventory/proveedores/:
     get:
       operationId: inventory_proveedores_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: query
         name: activo
@@ -1807,6 +1854,7 @@ paths:
           description: ''
     post:
       operationId: inventory_proveedores_create
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       tags:
       - inventory
       requestBody:
@@ -1833,6 +1881,7 @@ paths:
   /api/v1/inventory/proveedores/{id}/:
     get:
       operationId: inventory_proveedores_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -1853,6 +1902,7 @@ paths:
           description: ''
     put:
       operationId: inventory_proveedores_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -1885,6 +1935,7 @@ paths:
           description: ''
     patch:
       operationId: inventory_proveedores_partial_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -1916,6 +1967,7 @@ paths:
           description: ''
     delete:
       operationId: inventory_proveedores_destroy
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -1933,6 +1985,7 @@ paths:
   /api/v1/inventory/stock/:
     get:
       operationId: inventory_stock_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: query
         name: bodega
@@ -1984,6 +2037,7 @@ paths:
   /api/v1/inventory/stock/{id}/:
     get:
       operationId: inventory_stock_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -2010,6 +2064,16 @@ paths:
         name: bodega
         schema:
           type: number
+      - in: query
+        name: created_at_desde
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_at_hasta
+        schema:
+          type: string
+          format: date-time
       - in: query
         name: estado
         schema:
@@ -2055,19 +2119,20 @@ paths:
           description: ''
     post:
       operationId: operations_ajustes_create
+      summary: Crear ajuste de inventario en borrador.
       tags:
       - operations
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AjusteInventarioRequest'
+              $ref: '#/components/schemas/AjusteCreateRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/AjusteInventarioRequest'
+              $ref: '#/components/schemas/AjusteCreateRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/AjusteInventarioRequest'
+              $ref: '#/components/schemas/AjusteCreateRequest'
         required: true
       security:
       - jwtAuth: []
@@ -2099,9 +2164,32 @@ paths:
               schema:
                 $ref: '#/components/schemas/AjusteInventario'
           description: ''
+  /api/v1/operations/ajustes/{id}/anular/:
+    post:
+      operationId: operations_ajustes_anular_create
+      summary: Anular documento.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este ajuste de inventario.
+        required: true
+      tags:
+      - operations
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AjusteInventario'
+          description: ''
   /api/v1/operations/ajustes/{id}/aprobar/:
     post:
       operationId: operations_ajustes_aprobar_create
+      summary: Aprobar ajuste pendiente.
       parameters:
       - in: path
         name: id
@@ -2135,6 +2223,7 @@ paths:
   /api/v1/operations/ajustes/{id}/detalles/:
     post:
       operationId: operations_ajustes_detalles_create
+      summary: Agregar detalle al documento.
       parameters:
       - in: path
         name: id
@@ -2148,26 +2237,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AjusteInventarioRequest'
+              $ref: '#/components/schemas/AjusteDetalleCreateRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/AjusteInventarioRequest'
+              $ref: '#/components/schemas/AjusteDetalleCreateRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/AjusteInventarioRequest'
+              $ref: '#/components/schemas/AjusteDetalleCreateRequest'
         required: true
       security:
       - jwtAuth: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AjusteInventario'
-          description: ''
+        '201':
+          description: Detalle creado.
   /api/v1/operations/ajustes/{id}/ejecutar/:
     post:
       operationId: operations_ajustes_ejecutar_create
+      summary: Ejecutar ajuste aprobado.
       parameters:
       - in: path
         name: id
@@ -2201,6 +2287,7 @@ paths:
   /api/v1/operations/ajustes/{id}/enviar/:
     post:
       operationId: operations_ajustes_enviar_create
+      summary: Enviar ajuste a aprobación.
       parameters:
       - in: path
         name: id
@@ -2239,6 +2326,16 @@ paths:
         name: bodega_destino
         schema:
           type: number
+      - in: query
+        name: created_at_desde
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_at_hasta
+        schema:
+          type: string
+          format: date-time
       - in: query
         name: estado
         schema:
@@ -2288,19 +2385,20 @@ paths:
           description: ''
     post:
       operationId: operations_compras_create
+      summary: Crear compra en borrador.
       tags:
       - operations
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CompraRequest'
+              $ref: '#/components/schemas/CompraCreateRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/CompraRequest'
+              $ref: '#/components/schemas/CompraCreateRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/CompraRequest'
+              $ref: '#/components/schemas/CompraCreateRequest'
         required: true
       security:
       - jwtAuth: []
@@ -2332,9 +2430,32 @@ paths:
               schema:
                 $ref: '#/components/schemas/Compra'
           description: ''
+  /api/v1/operations/compras/{id}/anular/:
+    post:
+      operationId: operations_compras_anular_create
+      summary: Anular documento.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este compra.
+        required: true
+      tags:
+      - operations
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Compra'
+          description: ''
   /api/v1/operations/compras/{id}/aprobar/:
     post:
       operationId: operations_compras_aprobar_create
+      summary: Aprobar compra pendiente.
       parameters:
       - in: path
         name: id
@@ -2368,6 +2489,7 @@ paths:
   /api/v1/operations/compras/{id}/confirmar/:
     post:
       operationId: operations_compras_confirmar_create
+      summary: Confirmar compra aprobada.
       parameters:
       - in: path
         name: id
@@ -2401,6 +2523,7 @@ paths:
   /api/v1/operations/compras/{id}/detalles/:
     post:
       operationId: operations_compras_detalles_create
+      summary: Agregar detalle al documento.
       parameters:
       - in: path
         name: id
@@ -2414,26 +2537,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CompraRequest'
+              $ref: '#/components/schemas/CompraDetalleCreateRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/CompraRequest'
+              $ref: '#/components/schemas/CompraDetalleCreateRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/CompraRequest'
+              $ref: '#/components/schemas/CompraDetalleCreateRequest'
         required: true
       security:
       - jwtAuth: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Compra'
-          description: ''
+        '201':
+          description: Detalle creado.
   /api/v1/operations/compras/{id}/enviar/:
     post:
       operationId: operations_compras_enviar_create
+      summary: Enviar compra a aprobación.
       parameters:
       - in: path
         name: id
@@ -2472,6 +2592,16 @@ paths:
         name: bodega
         schema:
           type: number
+      - in: query
+        name: created_at_desde
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_at_hasta
+        schema:
+          type: string
+          format: date-time
       - in: query
         name: es_ad_hoc
         schema:
@@ -2544,9 +2674,32 @@ paths:
               schema:
                 $ref: '#/components/schemas/Entrega'
           description: ''
+  /api/v1/operations/entregas/{id}/anular/:
+    post:
+      operationId: operations_entregas_anular_create
+      summary: Anular documento.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este entrega.
+        required: true
+      tags:
+      - operations
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entrega'
+          description: ''
   /api/v1/operations/entregas/{id}/aprobar/:
     post:
       operationId: operations_entregas_aprobar_create
+      summary: Aprobar entrega pendiente.
       parameters:
       - in: path
         name: id
@@ -2580,6 +2733,7 @@ paths:
   /api/v1/operations/entregas/{id}/detalles/:
     post:
       operationId: operations_entregas_detalles_create
+      summary: Agregar detalle al documento.
       parameters:
       - in: path
         name: id
@@ -2593,26 +2747,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EntregaRequest'
+              $ref: '#/components/schemas/EntregaDetalleCreateRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/EntregaRequest'
+              $ref: '#/components/schemas/EntregaDetalleCreateRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/EntregaRequest'
+              $ref: '#/components/schemas/EntregaDetalleCreateRequest'
         required: true
       security:
       - jwtAuth: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Entrega'
-          description: ''
+        '201':
+          description: Detalle creado.
   /api/v1/operations/entregas/{id}/ejecutar/:
     post:
       operationId: operations_entregas_ejecutar_create
+      summary: Ejecutar entrega aprobada.
       parameters:
       - in: path
         name: id
@@ -2646,6 +2797,7 @@ paths:
   /api/v1/operations/entregas/{id}/enviar/:
     post:
       operationId: operations_entregas_enviar_create
+      summary: Enviar entrega a aprobación.
       parameters:
       - in: path
         name: id
@@ -2679,24 +2831,25 @@ paths:
   /api/v1/operations/entregas/ad-hoc/:
     post:
       operationId: operations_entregas_ad_hoc_create
+      summary: Crear entrega ad-hoc en borrador.
       tags:
       - operations
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EntregaRequest'
+              $ref: '#/components/schemas/EntregaAdHocCreateRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/EntregaRequest'
+              $ref: '#/components/schemas/EntregaAdHocCreateRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/EntregaRequest'
+              $ref: '#/components/schemas/EntregaAdHocCreateRequest'
         required: true
       security:
       - jwtAuth: []
       responses:
-        '200':
+        '201':
           content:
             application/json:
               schema:
@@ -2705,24 +2858,25 @@ paths:
   /api/v1/operations/entregas/desde-solicitud/:
     post:
       operationId: operations_entregas_desde_solicitud_create
+      summary: Crear entrega desde solicitud aprobada.
       tags:
       - operations
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EntregaRequest'
+              $ref: '#/components/schemas/EntregaDesdeSolicitudRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/EntregaRequest'
+              $ref: '#/components/schemas/EntregaDesdeSolicitudRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/EntregaRequest'
+              $ref: '#/components/schemas/EntregaDesdeSolicitudRequest'
         required: true
       security:
       - jwtAuth: []
       responses:
-        '200':
+        '201':
           content:
             application/json:
               schema:
@@ -2737,6 +2891,16 @@ paths:
         schema:
           type: number
       - in: query
+        name: created_at_desde
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_at_hasta
+        schema:
+          type: string
+          format: date-time
+      - in: query
         name: estado
         schema:
           type: number
@@ -2745,12 +2909,12 @@ paths:
         schema:
           type: string
       - in: query
-        name: fecha_desde
+        name: fecha_solicitud_desde
         schema:
           type: string
           format: date
       - in: query
-        name: fecha_hasta
+        name: fecha_solicitud_hasta
         schema:
           type: string
           format: date
@@ -2791,19 +2955,20 @@ paths:
           description: ''
     post:
       operationId: operations_solicitudes_create
+      summary: Crear solicitud en borrador.
       tags:
       - operations
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SolicitudRequest'
+              $ref: '#/components/schemas/SolicitudCreateRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/SolicitudRequest'
+              $ref: '#/components/schemas/SolicitudCreateRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/SolicitudRequest'
+              $ref: '#/components/schemas/SolicitudCreateRequest'
         required: true
       security:
       - jwtAuth: []
@@ -2838,6 +3003,7 @@ paths:
   /api/v1/operations/solicitudes/{id}/anular/:
     post:
       operationId: operations_solicitudes_anular_create
+      summary: Anular documento.
       parameters:
       - in: path
         name: id
@@ -2847,18 +3013,6 @@ paths:
         required: true
       tags:
       - operations
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SolicitudRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/SolicitudRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/SolicitudRequest'
-        required: true
       security:
       - jwtAuth: []
       responses:
@@ -2871,6 +3025,7 @@ paths:
   /api/v1/operations/solicitudes/{id}/aprobar/:
     post:
       operationId: operations_solicitudes_aprobar_create
+      summary: Aprobar solicitud pendiente.
       parameters:
       - in: path
         name: id
@@ -2904,6 +3059,7 @@ paths:
   /api/v1/operations/solicitudes/{id}/detalles/:
     post:
       operationId: operations_solicitudes_detalles_create
+      summary: Agregar detalle al documento.
       parameters:
       - in: path
         name: id
@@ -2917,26 +3073,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SolicitudRequest'
+              $ref: '#/components/schemas/SolicitudDetalleCreateRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/SolicitudRequest'
+              $ref: '#/components/schemas/SolicitudDetalleCreateRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/SolicitudRequest'
+              $ref: '#/components/schemas/SolicitudDetalleCreateRequest'
         required: true
       security:
       - jwtAuth: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Solicitud'
-          description: ''
+        '201':
+          description: Detalle creado.
   /api/v1/operations/solicitudes/{id}/enviar/:
     post:
       operationId: operations_solicitudes_enviar_create
+      summary: Enviar solicitud a aprobación.
       parameters:
       - in: path
         name: id
@@ -2970,6 +3123,7 @@ paths:
   /api/v1/operations/solicitudes/{id}/rechazar/:
     post:
       operationId: operations_solicitudes_rechazar_create
+      summary: Rechazar solicitud pendiente.
       parameters:
       - in: path
         name: id
@@ -3012,6 +3166,16 @@ paths:
         name: bodega_origen
         schema:
           type: number
+      - in: query
+        name: created_at_desde
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_at_hasta
+        schema:
+          type: string
+          format: date-time
       - in: query
         name: estado
         schema:
@@ -3057,19 +3221,20 @@ paths:
           description: ''
     post:
       operationId: operations_traslados_create
+      summary: Crear traslado en borrador.
       tags:
       - operations
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TrasladoRequest'
+              $ref: '#/components/schemas/TrasladoCreateRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TrasladoRequest'
+              $ref: '#/components/schemas/TrasladoCreateRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TrasladoRequest'
+              $ref: '#/components/schemas/TrasladoCreateRequest'
         required: true
       security:
       - jwtAuth: []
@@ -3101,9 +3266,32 @@ paths:
               schema:
                 $ref: '#/components/schemas/Traslado'
           description: ''
+  /api/v1/operations/traslados/{id}/anular/:
+    post:
+      operationId: operations_traslados_anular_create
+      summary: Anular documento.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este traslado.
+        required: true
+      tags:
+      - operations
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Traslado'
+          description: ''
   /api/v1/operations/traslados/{id}/aprobar/:
     post:
       operationId: operations_traslados_aprobar_create
+      summary: Aprobar traslado pendiente.
       parameters:
       - in: path
         name: id
@@ -3137,6 +3325,7 @@ paths:
   /api/v1/operations/traslados/{id}/despachar/:
     post:
       operationId: operations_traslados_despachar_create
+      summary: Despachar traslado aprobado.
       parameters:
       - in: path
         name: id
@@ -3170,6 +3359,7 @@ paths:
   /api/v1/operations/traslados/{id}/detalles/:
     post:
       operationId: operations_traslados_detalles_create
+      summary: Agregar detalle al documento.
       parameters:
       - in: path
         name: id
@@ -3183,26 +3373,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TrasladoRequest'
+              $ref: '#/components/schemas/TrasladoDetalleCreateRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TrasladoRequest'
+              $ref: '#/components/schemas/TrasladoDetalleCreateRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TrasladoRequest'
+              $ref: '#/components/schemas/TrasladoDetalleCreateRequest'
         required: true
       security:
       - jwtAuth: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Traslado'
-          description: ''
+        '201':
+          description: Detalle creado.
   /api/v1/operations/traslados/{id}/enviar/:
     post:
       operationId: operations_traslados_enviar_create
+      summary: Enviar traslado a aprobación.
       parameters:
       - in: path
         name: id
@@ -3236,6 +3423,7 @@ paths:
   /api/v1/operations/traslados/{id}/recibir/:
     post:
       operationId: operations_traslados_recibir_create
+      summary: Recibir traslado en tránsito.
       parameters:
       - in: path
         name: id
@@ -3269,16 +3457,22 @@ paths:
   /api/v1/security/me/:
     get:
       operationId: security_me_retrieve
+      summary: Perfil y permisos del usuario autenticado.
       tags:
       - security
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Me'
+          description: ''
   /api/v1/security/permisos/:
     get:
       operationId: security_permisos_list
+      summary: Listar permisos activos del sistema.
       parameters:
       - name: ordering
         required: false
@@ -3318,6 +3512,7 @@ paths:
   /api/v1/security/permisos/{id}/:
     get:
       operationId: security_permisos_retrieve
+      summary: Obtener permiso por id.
       parameters:
       - in: path
         name: id
@@ -3339,6 +3534,8 @@ paths:
   /api/v1/security/roles/:
     get:
       operationId: security_roles_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
+      summary: Listar roles de la empresa.
       parameters:
       - name: ordering
         required: false
@@ -3377,6 +3574,8 @@ paths:
           description: ''
     post:
       operationId: security_roles_create
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
+      summary: Crear rol en la empresa.
       tags:
       - security
       requestBody:
@@ -3403,6 +3602,8 @@ paths:
   /api/v1/security/roles/{id}/:
     get:
       operationId: security_roles_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
+      summary: Obtener rol de la empresa.
       parameters:
       - in: path
         name: id
@@ -3423,6 +3624,8 @@ paths:
           description: ''
     put:
       operationId: security_roles_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
+      summary: Actualizar rol.
       parameters:
       - in: path
         name: id
@@ -3455,6 +3658,8 @@ paths:
           description: ''
     patch:
       operationId: security_roles_partial_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
+      summary: Actualizar parcialmente rol.
       parameters:
       - in: path
         name: id
@@ -3486,6 +3691,8 @@ paths:
           description: ''
     delete:
       operationId: security_roles_destroy
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
+      summary: Eliminar rol.
       parameters:
       - in: path
         name: id
@@ -3503,6 +3710,8 @@ paths:
   /api/v1/security/usuarios/:
     get:
       operationId: security_usuarios_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
+      summary: Listar usuarios de la empresa autenticada.
       parameters:
       - name: ordering
         required: false
@@ -3541,6 +3750,8 @@ paths:
           description: ''
     post:
       operationId: security_usuarios_create
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
+      summary: Crear usuario en la empresa autenticada.
       tags:
       - security
       requestBody:
@@ -3567,6 +3778,8 @@ paths:
   /api/v1/security/usuarios/{id}/:
     get:
       operationId: security_usuarios_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
+      summary: Obtener usuario de la empresa.
       parameters:
       - in: path
         name: id
@@ -3587,6 +3800,8 @@ paths:
           description: ''
     put:
       operationId: security_usuarios_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
+      summary: Actualizar usuario.
       parameters:
       - in: path
         name: id
@@ -3619,6 +3834,8 @@ paths:
           description: ''
     patch:
       operationId: security_usuarios_partial_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
+      summary: Actualizar parcialmente usuario.
       parameters:
       - in: path
         name: id
@@ -3650,6 +3867,8 @@ paths:
           description: ''
     delete:
       operationId: security_usuarios_destroy
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
+      summary: Eliminar usuario.
       parameters:
       - in: path
         name: id
@@ -3667,6 +3886,7 @@ paths:
   /api/v1/support/adjuntos/:
     get:
       operationId: support_adjuntos_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: query
         name: documento_id
@@ -3713,6 +3933,7 @@ paths:
           description: ''
     post:
       operationId: support_adjuntos_create
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       tags:
       - support
       requestBody:
@@ -3739,6 +3960,7 @@ paths:
   /api/v1/support/adjuntos/{id}/:
     get:
       operationId: support_adjuntos_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -3759,6 +3981,7 @@ paths:
           description: ''
     put:
       operationId: support_adjuntos_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -3791,6 +4014,7 @@ paths:
           description: ''
     patch:
       operationId: support_adjuntos_partial_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -3822,6 +4046,7 @@ paths:
           description: ''
     delete:
       operationId: support_adjuntos_destroy
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -3839,6 +4064,7 @@ paths:
   /api/v1/support/custodios/:
     get:
       operationId: support_custodios_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: query
         name: activo
@@ -3881,6 +4107,7 @@ paths:
           description: ''
     post:
       operationId: support_custodios_create
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       tags:
       - support
       requestBody:
@@ -3907,6 +4134,7 @@ paths:
   /api/v1/support/custodios/{id}/:
     get:
       operationId: support_custodios_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -3927,6 +4155,7 @@ paths:
           description: ''
     put:
       operationId: support_custodios_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -3959,6 +4188,7 @@ paths:
           description: ''
     patch:
       operationId: support_custodios_partial_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -3990,6 +4220,7 @@ paths:
           description: ''
     delete:
       operationId: support_custodios_destroy
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -4007,6 +4238,7 @@ paths:
   /api/v1/support/numeradores/:
     get:
       operationId: support_numeradores_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: query
         name: activo
@@ -4054,6 +4286,7 @@ paths:
   /api/v1/support/numeradores/{id}/:
     get:
       operationId: support_numeradores_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -4074,6 +4307,7 @@ paths:
           description: ''
     patch:
       operationId: support_numeradores_partial_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -4106,6 +4340,7 @@ paths:
   /api/v1/support/ubicaciones/:
     get:
       operationId: support_ubicaciones_list
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: query
         name: activa
@@ -4152,6 +4387,7 @@ paths:
           description: ''
     post:
       operationId: support_ubicaciones_create
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       tags:
       - support
       requestBody:
@@ -4178,6 +4414,7 @@ paths:
   /api/v1/support/ubicaciones/{id}/:
     get:
       operationId: support_ubicaciones_retrieve
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -4198,6 +4435,7 @@ paths:
           description: ''
     put:
       operationId: support_ubicaciones_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -4230,6 +4468,7 @@ paths:
           description: ''
     patch:
       operationId: support_ubicaciones_partial_update
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -4261,6 +4500,7 @@ paths:
           description: ''
     delete:
       operationId: support_ubicaciones_destroy
+      description: Paginación, filtros (?campo=), búsqueda (?search=) y orden (?ordering=).
       parameters:
       - in: path
         name: id
@@ -4277,10 +4517,42 @@ paths:
           description: No response body
 components:
   schemas:
+    ActivoTokenObtainPairRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          writeOnly: true
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - email
+      - password
+    ActivoTokenRefresh:
+      type: object
+      properties:
+        refresh:
+          type: string
+        access:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - refresh
+    ActivoTokenRefreshRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          minLength: 1
+      required:
+      - refresh
     Adjunto:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         id:
           type: integer
@@ -4296,7 +4568,7 @@ components:
           maxLength: 255
         ruta_archivo:
           type: string
-          maxLength: 500
+          readOnly: true
         mime_type:
           type: string
           nullable: true
@@ -4310,6 +4582,7 @@ components:
           readOnly: true
         subido_por:
           type: integer
+          readOnly: true
           nullable: true
       required:
       - created_at
@@ -4319,10 +4592,10 @@ components:
       - modulo
       - nombre_archivo
       - ruta_archivo
+      - subido_por
     AdjuntoRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         modulo:
           type: string
@@ -4336,22 +4609,44 @@ components:
           type: string
           minLength: 1
           maxLength: 255
-        ruta_archivo:
-          type: string
-          minLength: 1
-          maxLength: 500
         mime_type:
           type: string
           nullable: true
           maxLength: 100
-        subido_por:
-          type: integer
-          nullable: true
       required:
       - documento_id
       - modulo
       - nombre_archivo
-      - ruta_archivo
+    AjusteCreateRequest:
+      type: object
+      properties:
+        bodega:
+          type: integer
+        fecha_ajuste:
+          type: string
+          format: date
+        motivo:
+          type: string
+      required:
+      - bodega
+    AjusteDetalleCreateRequest:
+      type: object
+      properties:
+        producto:
+          type: integer
+        cantidad_contada:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        serie:
+          type: integer
+          nullable: true
+        lote:
+          type: integer
+          nullable: true
+      required:
+      - cantidad_contada
+      - producto
     AjusteInventario:
       type: object
       properties:
@@ -4497,8 +4792,7 @@ components:
       - fecha_ajuste
     Bodega:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         id:
           type: integer
@@ -4542,8 +4836,7 @@ components:
       - updated_at
     BodegaRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         codigo:
           type: string
@@ -4571,8 +4864,7 @@ components:
       - nombre
     Categoria:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         id:
           type: integer
@@ -4598,8 +4890,7 @@ components:
       - nombre
     CategoriaRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         codigo:
           type: string
@@ -4619,8 +4910,7 @@ components:
       - nombre
     CentroCosto:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         id:
           type: integer
@@ -4657,8 +4947,7 @@ components:
       - updated_at
     CentroCostoRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         codigo:
           type: string
@@ -4745,6 +5034,21 @@ components:
       - numero
       - proveedor
       - updated_at
+    CompraCreateRequest:
+      type: object
+      properties:
+        proveedor:
+          type: integer
+        bodega_destino:
+          type: integer
+        fecha_compra:
+          type: string
+          format: date
+        observacion:
+          type: string
+      required:
+      - bodega_destino
+      - proveedor
     CompraDetalle:
       type: object
       properties:
@@ -4778,6 +5082,29 @@ components:
       - compra
       - costo_unitario
       - id
+      - producto
+    CompraDetalleCreateRequest:
+      type: object
+      properties:
+        producto:
+          type: integer
+        cantidad:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        costo_unitario:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        lote:
+          type: integer
+          nullable: true
+        numero_serie:
+          type: string
+          nullable: true
+      required:
+      - cantidad
+      - costo_unitario
       - producto
     CompraDetalleRequest:
       type: object
@@ -4828,8 +5155,7 @@ components:
       - proveedor
     Custodio:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         id:
           type: integer
@@ -4865,8 +5191,7 @@ components:
       - nombre_completo
     CustodioRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         codigo:
           type: string
@@ -5005,6 +5330,32 @@ components:
       - id
       - numero
       - updated_at
+    EntregaAdHocCreateRequest:
+      type: object
+      properties:
+        bodega:
+          type: integer
+        centro_costo:
+          type: integer
+        fecha_entrega:
+          type: string
+          format: date
+      required:
+      - bodega
+      - centro_costo
+    EntregaDesdeSolicitudRequest:
+      type: object
+      properties:
+        solicitud:
+          type: integer
+        bodega:
+          type: integer
+        fecha_entrega:
+          type: string
+          format: date
+      required:
+      - bodega
+      - solicitud
     EntregaDetalle:
       type: object
       properties:
@@ -5032,6 +5383,24 @@ components:
       - cantidad_entregada
       - entrega
       - id
+      - producto
+    EntregaDetalleCreateRequest:
+      type: object
+      properties:
+        producto:
+          type: integer
+        cantidad_entregada:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        serie:
+          type: integer
+          nullable: true
+        lote:
+          type: integer
+          nullable: true
+      required:
+      - cantidad_entregada
       - producto
     EntregaDetalleRequest:
       type: object
@@ -5135,8 +5504,7 @@ components:
       - nombre
     Marca:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         id:
           type: integer
@@ -5159,8 +5527,7 @@ components:
       - nombre
     MarcaRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         codigo:
           type: string
@@ -5174,6 +5541,37 @@ components:
           type: boolean
       required:
       - nombre
+    Me:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 150
+        nombre_completo:
+          type: string
+          maxLength: 150
+        empresa_id:
+          type: integer
+          readOnly: true
+        empresa_codigo:
+          type: string
+          readOnly: true
+        activo:
+          type: boolean
+        permisos:
+          type: string
+          readOnly: true
+      required:
+      - email
+      - empresa_codigo
+      - empresa_id
+      - id
+      - nombre_completo
+      - permisos
     MetodoCosteo:
       type: object
       properties:
@@ -5300,8 +5698,7 @@ components:
         * `NEUTRO` - Neutro
     Numerador:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         id:
           type: integer
@@ -5956,8 +6353,7 @@ components:
             $ref: '#/components/schemas/Usuario'
     ParametroEmpresa:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         id:
           type: integer
@@ -5993,8 +6389,7 @@ components:
       - updated_at
     ParametroEmpresaRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         metodo_costeo:
           type: integer
@@ -6007,8 +6402,7 @@ components:
           type: boolean
     PatchedAdjuntoRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         modulo:
           type: string
@@ -6022,21 +6416,13 @@ components:
           type: string
           minLength: 1
           maxLength: 255
-        ruta_archivo:
-          type: string
-          minLength: 1
-          maxLength: 500
         mime_type:
           type: string
           nullable: true
           maxLength: 100
-        subido_por:
-          type: integer
-          nullable: true
     PatchedBodegaRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         codigo:
           type: string
@@ -6061,8 +6447,7 @@ components:
           nullable: true
     PatchedCategoriaRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         codigo:
           type: string
@@ -6079,8 +6464,7 @@ components:
           type: boolean
     PatchedCentroCostoRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         codigo:
           type: string
@@ -6098,8 +6482,7 @@ components:
           type: boolean
     PatchedCustodioRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         codigo:
           type: string
@@ -6126,8 +6509,7 @@ components:
           type: boolean
     PatchedMarcaRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         codigo:
           type: string
@@ -6141,8 +6523,7 @@ components:
           type: boolean
     PatchedNumeradorRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         tipo_documento:
           type: string
@@ -6167,8 +6548,7 @@ components:
           type: boolean
     PatchedParametroEmpresaRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         metodo_costeo:
           type: integer
@@ -6181,8 +6561,7 @@ components:
           type: boolean
     PatchedProductoRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         sku:
           type: string
@@ -6222,8 +6601,7 @@ components:
           type: integer
     PatchedProveedorRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         rut:
           type: string
@@ -6265,8 +6643,7 @@ components:
           type: boolean
     PatchedSucursalRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         codigo:
           type: string
@@ -6284,8 +6661,7 @@ components:
           type: boolean
     PatchedUbicacionBodegaRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         codigo:
           type: string
@@ -6308,8 +6684,7 @@ components:
           nullable: true
     PatchedUnidadMedidaRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         codigo:
           type: string
@@ -6338,8 +6713,6 @@ components:
           minLength: 1
           maxLength: 150
         activo:
-          type: boolean
-        is_staff:
           type: boolean
     Permiso:
       type: object
@@ -6374,8 +6747,7 @@ components:
       - nombre
     Producto:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         id:
           type: integer
@@ -6446,8 +6818,7 @@ components:
       - updated_at
     ProductoRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         sku:
           type: string
@@ -6492,8 +6863,7 @@ components:
       - unidad_medida
     Proveedor:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         id:
           type: integer
@@ -6528,8 +6898,7 @@ components:
       - razon_social
     ProveedorRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         rut:
           type: string
@@ -6668,6 +7037,18 @@ components:
       - id
       - numero
       - updated_at
+    SolicitudCreateRequest:
+      type: object
+      properties:
+        centro_costo:
+          type: integer
+        fecha_solicitud:
+          type: string
+          format: date
+        motivo:
+          type: string
+      required:
+      - centro_costo
     SolicitudDetalle:
       type: object
       properties:
@@ -6690,6 +7071,9 @@ components:
           type: integer
         producto:
           type: integer
+        serie:
+          type: integer
+          nullable: true
         lote:
           type: integer
           nullable: true
@@ -6698,6 +7082,24 @@ components:
       - id
       - producto
       - solicitud
+    SolicitudDetalleCreateRequest:
+      type: object
+      properties:
+        producto:
+          type: integer
+        cantidad_solicitada:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        serie:
+          type: integer
+          nullable: true
+        lote:
+          type: integer
+          nullable: true
+      required:
+      - cantidad_solicitada
+      - producto
     SolicitudDetalleRequest:
       type: object
       properties:
@@ -6717,6 +7119,9 @@ components:
           type: integer
         producto:
           type: integer
+        serie:
+          type: integer
+          nullable: true
         lote:
           type: integer
           nullable: true
@@ -6785,8 +7190,7 @@ components:
       - updated_at
     Sucursal:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         id:
           type: integer
@@ -6823,8 +7227,7 @@ components:
       - updated_at
     SucursalRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         codigo:
           type: string
@@ -6889,49 +7292,6 @@ components:
       - id
       - naturaleza
       - nombre
-    TokenObtainPair:
-      type: object
-      properties:
-        access:
-          type: string
-          readOnly: true
-        refresh:
-          type: string
-          readOnly: true
-      required:
-      - access
-      - refresh
-    TokenObtainPairRequest:
-      type: object
-      properties:
-        email:
-          type: string
-          writeOnly: true
-          minLength: 1
-        password:
-          type: string
-          writeOnly: true
-          minLength: 1
-      required:
-      - email
-      - password
-    TokenRefresh:
-      type: object
-      properties:
-        access:
-          type: string
-          readOnly: true
-      required:
-      - access
-    TokenRefreshRequest:
-      type: object
-      properties:
-        refresh:
-          type: string
-          writeOnly: true
-          minLength: 1
-      required:
-      - refresh
     Traslado:
       type: object
       properties:
@@ -7007,6 +7367,21 @@ components:
       - id
       - numero
       - updated_at
+    TrasladoCreateRequest:
+      type: object
+      properties:
+        bodega_origen:
+          type: integer
+        bodega_destino:
+          type: integer
+        bodega_transito:
+          type: integer
+          nullable: true
+        motivo:
+          type: string
+      required:
+      - bodega_destino
+      - bodega_origen
     TrasladoDetalle:
       type: object
       properties:
@@ -7035,6 +7410,24 @@ components:
       - id
       - producto
       - traslado
+    TrasladoDetalleCreateRequest:
+      type: object
+      properties:
+        producto:
+          type: integer
+        cantidad_trasladada:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        serie:
+          type: integer
+          nullable: true
+        lote:
+          type: integer
+          nullable: true
+      required:
+      - cantidad_trasladada
+      - producto
     TrasladoDetalleRequest:
       type: object
       properties:
@@ -7085,8 +7478,7 @@ components:
       - bodega_origen
     UbicacionBodega:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         id:
           type: integer
@@ -7119,8 +7511,7 @@ components:
       - nombre
     UbicacionBodegaRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         codigo:
           type: string
@@ -7147,8 +7538,7 @@ components:
       - nombre
     UnidadMedida:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         id:
           type: integer
@@ -7175,8 +7565,7 @@ components:
       - nombre
     UnidadMedidaRequest:
       type: object
-      description: Valida FKs declaradas en empresa_scoped_fk_fields contra la empresa
-        del usuario.
+      description: ModelSerializer con FKs acotados por empresa del request.
       properties:
         codigo:
           type: string
@@ -7216,6 +7605,7 @@ components:
           type: boolean
         is_staff:
           type: boolean
+          readOnly: true
         ultimo_acceso_at:
           type: string
           format: date-time
@@ -7234,6 +7624,7 @@ components:
       - email
       - empresa
       - id
+      - is_staff
       - nombre_completo
       - ultimo_acceso_at
       - updated_at
@@ -7248,8 +7639,6 @@ components:
           type: string
           maxLength: 150
         activo:
-          type: boolean
-        is_staff:
           type: boolean
       required:
       - email
@@ -7272,8 +7661,6 @@ components:
           minLength: 8
         activo:
           type: boolean
-        is_staff:
-          type: boolean
       required:
       - email
       - nombre_completo
@@ -7291,8 +7678,6 @@ components:
           minLength: 1
           maxLength: 150
         activo:
-          type: boolean
-        is_staff:
           type: boolean
       required:
       - email

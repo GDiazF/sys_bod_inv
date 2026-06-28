@@ -13,7 +13,7 @@ class RBACPermission(BasePermission):
             return True
         codigo = view.get_required_permission()
         if codigo is None:
-            return True
+            return False
         if isinstance(codigo, (list, tuple, set)):
             return PermisoService.tiene_alguno(request.user, codigo)
         return PermisoService.tiene_permiso(request.user, codigo)

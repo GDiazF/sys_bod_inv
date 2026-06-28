@@ -11,9 +11,15 @@ from inventory.services.movimiento_inventario_service import (
 )
 from inventory.services.stock_service import StockService
 from operations.models import AjusteInventario, AjusteInventarioDetalle
+from operations.services.documento_anulacion_service import DocumentoAnulacionService
 from operations.services.documento_estado_service import DocumentoEstadoService
 from operations.services.exceptions import DocumentoNoAprobadoError, DocumentoSinDetalleError
 from operations.services.historial_documento_service import HistorialDocumentoService
+from operations.services.tenant_validation import (
+    validar_detalle_operacion,
+    validar_objetos_misma_empresa,
+    validar_usuario_empresa,
+)
 from security.models import Usuario
 from support.services.numerador_service import NumeradorService
 
@@ -28,6 +34,12 @@ class AjusteInventarioService:
         fecha_ajuste: date | None = None,
         motivo: str | None = None,
     ) -> AjusteInventario:
+        validar_usuario_empresa(usuario, empresa.id)
+        validar_objetos_misma_empresa(
+            empresa.id,
+            bodega,
+            etiquetas=['bodega'],
+        )
         numero = NumeradorService.generar_folio(empresa, AjusteInventario.TIPO_DOCUMENTO)
         ajuste = AjusteInventario.objects.create(
             empresa=empresa,
@@ -58,6 +70,14 @@ class AjusteInventarioService:
         lote: Lote | None = None,
     ) -> AjusteInventarioDetalle:
         DocumentoEstadoService.validar_editable(ajuste.estado.codigo)
+        validar_detalle_operacion(
+            ajuste.empresa_id,
+            producto,
+            serie=serie,
+            lote=lote,
+            cantidad=abs(cantidad_contada),
+            bodega=ajuste.bodega,
+        )
         cantidad_sistema = StockService.obtener_stock(ajuste.bodega, producto, lote)
         return AjusteInventarioDetalle.objects.create(
             ajuste=ajuste,
@@ -109,7 +129,10 @@ class AjusteInventarioService:
             raise DocumentoNoAprobadoError('El ajuste debe estar aprobado para ejecutarse.')
 
         for detalle in ajuste.detalles.all():
-            diferencia = detalle.diferencia
+            cantidad_sistema = StockService.obtener_stock(
+                ajuste.bodega, detalle.producto, detalle.lote
+            )
+            diferencia = detalle.cantidad_contada - cantidad_sistema
             if diferencia == 0:
                 continue
 
@@ -147,6 +170,26 @@ class AjusteInventarioService:
         estado_anterior = ajuste.estado.codigo
         DocumentoEstadoService.cambiar_estado(
             ajuste, AjusteInventario.TIPO_DOCUMENTO, 'CERRADO', usuario
+        )
+        HistorialDocumentoService.registrar_cambio(
+            ajuste, AjusteInventario.TIPO_DOCUMENTO, estado_anterior, usuario
+        )
+        return ajuste
+
+    @staticmethod
+    @transaction.atomic
+    def anular(ajuste: AjusteInventario, usuario: Usuario) -> AjusteInventario:
+        ajuste = AjusteInventario.objects.select_for_update().get(pk=ajuste.pk)
+        estado_anterior = ajuste.estado.codigo
+        if estado_anterior == 'CERRADO':
+            DocumentoAnulacionService.reversar_movimientos(
+                AjusteInventario.TIPO_DOCUMENTO,
+                ajuste.pk,
+                usuario,
+                ajuste.empresa_id,
+            )
+        DocumentoEstadoService.cambiar_estado(
+            ajuste, AjusteInventario.TIPO_DOCUMENTO, 'ANULADO', usuario
         )
         HistorialDocumentoService.registrar_cambio(
             ajuste, AjusteInventario.TIPO_DOCUMENTO, estado_anterior, usuario

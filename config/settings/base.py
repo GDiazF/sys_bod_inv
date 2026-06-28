@@ -108,6 +108,9 @@ REST_FRAMEWORK = {
         'rest_framework.filters.OrderingFilter',
     ),
     'EXCEPTION_HANDLER': 'config.exceptions.api_exception_handler',
+    'DEFAULT_THROTTLE_RATES': {
+        'auth': config('AUTH_THROTTLE_RATE', default='20/minute'),
+    },
 }
 
 SIMPLE_JWT = {

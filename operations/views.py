@@ -1,3 +1,4 @@
+from django.db.models import Prefetch
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -10,7 +11,24 @@ from operations.api.filters import (
     SolicitudFilter,
     TrasladoFilter,
 )
-from operations.models import AjusteInventario, Compra, Entrega, Solicitud, Traslado
+from operations.api.schema import (
+    schema_accion_documento,
+    schema_anular_documento,
+    schema_crear_detalle,
+    schema_crear_documento,
+)
+from operations.models import (
+    AjusteInventario,
+    AjusteInventarioDetalle,
+    Compra,
+    CompraDetalle,
+    Entrega,
+    EntregaDetalle,
+    Solicitud,
+    SolicitudDetalle,
+    Traslado,
+    TrasladoDetalle,
+)
 from operations.serializers import (
     AjusteCreateSerializer,
     AjusteDetalleCreateSerializer,
@@ -44,7 +62,12 @@ class SolicitudViewSet(
     viewsets.GenericViewSet,
 ):
     serializer_class = SolicitudSerializer
-    queryset = Solicitud.objects.select_related('estado', 'centro_costo').prefetch_related('detalles')
+    queryset = Solicitud.objects.select_related('estado', 'centro_costo').prefetch_related(
+        Prefetch(
+            'detalles',
+            queryset=SolicitudDetalle.objects.select_related('producto', 'serie', 'lote'),
+        )
+    )
     filterset_class = SolicitudFilter
     search_fields = ['numero', 'motivo', 'prioridad']
     ordering_fields = ['numero', 'fecha_solicitud', 'created_at']
@@ -60,6 +83,11 @@ class SolicitudViewSet(
         'anular': 'operations.documento.anular',
     }
 
+    @schema_crear_documento(
+        SolicitudCreateSerializer,
+        SolicitudSerializer,
+        'Crear solicitud en borrador.',
+    )
     def create(self, request, *args, **kwargs):
         serializer = SolicitudCreateSerializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
@@ -73,11 +101,13 @@ class SolicitudViewSet(
         )
         return Response(SolicitudSerializer(solicitud).data, status=status.HTTP_201_CREATED)
 
+    @schema_accion_documento(response=SolicitudSerializer, summary='Enviar solicitud a aprobación.')
     @action(detail=True, methods=['post'])
     def enviar(self, request, pk=None):
         solicitud = SolicitudService.enviar(self.get_object(), request.user)
         return Response(SolicitudSerializer(solicitud).data)
 
+    @schema_crear_detalle(SolicitudDetalleCreateSerializer)
     @action(detail=True, methods=['post'], url_path='detalles')
     def agregar_detalle(self, request, pk=None):
         serializer = SolicitudDetalleCreateSerializer(data=request.data, context={'request': request})
@@ -88,19 +118,23 @@ class SolicitudViewSet(
             data['producto'],
             data['cantidad_solicitada'],
             lote=data.get('lote'),
+            serie=data.get('serie'),
         )
         return Response({'id': detalle.id}, status=status.HTTP_201_CREATED)
 
+    @schema_accion_documento(response=SolicitudSerializer, summary='Aprobar solicitud pendiente.')
     @action(detail=True, methods=['post'])
     def aprobar(self, request, pk=None):
         solicitud = SolicitudService.aprobar(self.get_object(), request.user)
         return Response(SolicitudSerializer(solicitud).data)
 
+    @schema_accion_documento(response=SolicitudSerializer, summary='Rechazar solicitud pendiente.')
     @action(detail=True, methods=['post'])
     def rechazar(self, request, pk=None):
         solicitud = SolicitudService.rechazar(self.get_object(), request.user)
         return Response(SolicitudSerializer(solicitud).data)
 
+    @schema_anular_documento(SolicitudSerializer)
     @action(detail=True, methods=['post'])
     def anular(self, request, pk=None):
         solicitud = SolicitudService.anular(self.get_object(), request.user)
@@ -114,7 +148,12 @@ class EntregaViewSet(
     viewsets.GenericViewSet,
 ):
     serializer_class = EntregaSerializer
-    queryset = Entrega.objects.select_related('estado', 'bodega').prefetch_related('detalles')
+    queryset = Entrega.objects.select_related('estado', 'bodega').prefetch_related(
+        Prefetch(
+            'detalles',
+            queryset=EntregaDetalle.objects.select_related('producto', 'serie', 'lote'),
+        )
+    )
     filterset_class = EntregaFilter
     search_fields = ['numero', 'recibido_por', 'observacion']
     ordering_fields = ['numero', 'fecha_entrega', 'created_at']
@@ -131,6 +170,11 @@ class EntregaViewSet(
         'anular': 'operations.documento.anular',
     }
 
+    @schema_crear_documento(
+        EntregaDesdeSolicitudSerializer,
+        EntregaSerializer,
+        'Crear entrega desde solicitud aprobada.',
+    )
     @action(detail=False, methods=['post'], url_path='desde-solicitud')
     def crear_desde_solicitud(self, request):
         serializer = EntregaDesdeSolicitudSerializer(data=request.data, context={'request': request})
@@ -144,6 +188,11 @@ class EntregaViewSet(
         )
         return Response(EntregaSerializer(entrega).data, status=status.HTTP_201_CREATED)
 
+    @schema_crear_documento(
+        EntregaAdHocCreateSerializer,
+        EntregaSerializer,
+        'Crear entrega ad-hoc en borrador.',
+    )
     @action(detail=False, methods=['post'], url_path='ad-hoc')
     def crear_ad_hoc(self, request):
         serializer = EntregaAdHocCreateSerializer(data=request.data, context={'request': request})
@@ -158,6 +207,7 @@ class EntregaViewSet(
         )
         return Response(EntregaSerializer(entrega).data, status=status.HTTP_201_CREATED)
 
+    @schema_crear_detalle(EntregaDetalleCreateSerializer)
     @action(detail=True, methods=['post'], url_path='detalles')
     def agregar_detalle(self, request, pk=None):
         serializer = EntregaDetalleCreateSerializer(data=request.data, context={'request': request})
@@ -172,19 +222,28 @@ class EntregaViewSet(
         )
         return Response({'id': detalle.id}, status=status.HTTP_201_CREATED)
 
+    @schema_accion_documento(response=EntregaSerializer, summary='Enviar entrega a aprobación.')
     @action(detail=True, methods=['post'])
     def enviar(self, request, pk=None):
         entrega = EntregaService.enviar(self.get_object(), request.user)
         return Response(EntregaSerializer(entrega).data)
 
+    @schema_accion_documento(response=EntregaSerializer, summary='Aprobar entrega pendiente.')
     @action(detail=True, methods=['post'])
     def aprobar(self, request, pk=None):
         entrega = EntregaService.aprobar(self.get_object(), request.user)
         return Response(EntregaSerializer(entrega).data)
 
+    @schema_accion_documento(response=EntregaSerializer, summary='Ejecutar entrega aprobada.')
     @action(detail=True, methods=['post'])
     def ejecutar(self, request, pk=None):
         entrega = EntregaService.ejecutar(self.get_object(), request.user)
+        return Response(EntregaSerializer(entrega).data)
+
+    @schema_anular_documento(EntregaSerializer)
+    @action(detail=True, methods=['post'])
+    def anular(self, request, pk=None):
+        entrega = EntregaService.anular(self.get_object(), request.user)
         return Response(EntregaSerializer(entrega).data)
 
 
@@ -196,8 +255,13 @@ class TrasladoViewSet(
     viewsets.GenericViewSet,
 ):
     serializer_class = TrasladoSerializer
-    queryset = Traslado.objects.select_related('estado', 'bodega_origen', 'bodega_destino').prefetch_related(
-        'detalles'
+    queryset = Traslado.objects.select_related(
+        'estado', 'bodega_origen', 'bodega_destino'
+    ).prefetch_related(
+        Prefetch(
+            'detalles',
+            queryset=TrasladoDetalle.objects.select_related('producto', 'serie', 'lote'),
+        )
     )
     filterset_class = TrasladoFilter
     search_fields = ['numero', 'motivo']
@@ -215,6 +279,11 @@ class TrasladoViewSet(
         'anular': 'operations.documento.anular',
     }
 
+    @schema_crear_documento(
+        TrasladoCreateSerializer,
+        TrasladoSerializer,
+        'Crear traslado en borrador.',
+    )
     def create(self, request, *args, **kwargs):
         serializer = TrasladoCreateSerializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
@@ -229,6 +298,7 @@ class TrasladoViewSet(
         )
         return Response(TrasladoSerializer(traslado).data, status=status.HTTP_201_CREATED)
 
+    @schema_crear_detalle(TrasladoDetalleCreateSerializer)
     @action(detail=True, methods=['post'], url_path='detalles')
     def agregar_detalle(self, request, pk=None):
         serializer = TrasladoDetalleCreateSerializer(data=request.data, context={'request': request})
@@ -243,24 +313,34 @@ class TrasladoViewSet(
         )
         return Response({'id': detalle.id}, status=status.HTTP_201_CREATED)
 
+    @schema_accion_documento(response=TrasladoSerializer, summary='Enviar traslado a aprobación.')
     @action(detail=True, methods=['post'])
     def enviar(self, request, pk=None):
         traslado = TrasladoService.enviar(self.get_object(), request.user)
         return Response(TrasladoSerializer(traslado).data)
 
+    @schema_accion_documento(response=TrasladoSerializer, summary='Aprobar traslado pendiente.')
     @action(detail=True, methods=['post'])
     def aprobar(self, request, pk=None):
         traslado = TrasladoService.aprobar(self.get_object(), request.user)
         return Response(TrasladoSerializer(traslado).data)
 
+    @schema_accion_documento(response=TrasladoSerializer, summary='Despachar traslado aprobado.')
     @action(detail=True, methods=['post'])
     def despachar(self, request, pk=None):
         traslado = TrasladoService.despachar(self.get_object(), request.user)
         return Response(TrasladoSerializer(traslado).data)
 
+    @schema_accion_documento(response=TrasladoSerializer, summary='Recibir traslado en tránsito.')
     @action(detail=True, methods=['post'])
     def recibir(self, request, pk=None):
         traslado = TrasladoService.recibir(self.get_object(), request.user)
+        return Response(TrasladoSerializer(traslado).data)
+
+    @schema_anular_documento(TrasladoSerializer)
+    @action(detail=True, methods=['post'])
+    def anular(self, request, pk=None):
+        traslado = TrasladoService.anular(self.get_object(), request.user)
         return Response(TrasladoSerializer(traslado).data)
 
 
@@ -272,7 +352,12 @@ class CompraViewSet(
     viewsets.GenericViewSet,
 ):
     serializer_class = CompraSerializer
-    queryset = Compra.objects.select_related('estado', 'proveedor', 'bodega_destino').prefetch_related('detalles')
+    queryset = Compra.objects.select_related('estado', 'proveedor', 'bodega_destino').prefetch_related(
+        Prefetch(
+            'detalles',
+            queryset=CompraDetalle.objects.select_related('producto', 'lote'),
+        )
+    )
     filterset_class = CompraFilter
     search_fields = ['numero', 'observacion']
     ordering_fields = ['numero', 'fecha_compra', 'created_at']
@@ -288,6 +373,11 @@ class CompraViewSet(
         'anular': 'operations.documento.anular',
     }
 
+    @schema_crear_documento(
+        CompraCreateSerializer,
+        CompraSerializer,
+        'Crear compra en borrador.',
+    )
     def create(self, request, *args, **kwargs):
         serializer = CompraCreateSerializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
@@ -302,6 +392,7 @@ class CompraViewSet(
         )
         return Response(CompraSerializer(compra).data, status=status.HTTP_201_CREATED)
 
+    @schema_crear_detalle(CompraDetalleCreateSerializer)
     @action(detail=True, methods=['post'], url_path='detalles')
     def agregar_detalle(self, request, pk=None):
         serializer = CompraDetalleCreateSerializer(data=request.data, context={'request': request})
@@ -317,19 +408,28 @@ class CompraViewSet(
         )
         return Response({'id': detalle.id}, status=status.HTTP_201_CREATED)
 
+    @schema_accion_documento(response=CompraSerializer, summary='Enviar compra a aprobación.')
     @action(detail=True, methods=['post'])
     def enviar(self, request, pk=None):
         compra = CompraService.enviar(self.get_object(), request.user)
         return Response(CompraSerializer(compra).data)
 
+    @schema_accion_documento(response=CompraSerializer, summary='Aprobar compra pendiente.')
     @action(detail=True, methods=['post'])
     def aprobar(self, request, pk=None):
         compra = CompraService.aprobar(self.get_object(), request.user)
         return Response(CompraSerializer(compra).data)
 
+    @schema_accion_documento(response=CompraSerializer, summary='Confirmar compra aprobada.')
     @action(detail=True, methods=['post'])
     def confirmar(self, request, pk=None):
         compra = CompraService.confirmar(self.get_object(), request.user)
+        return Response(CompraSerializer(compra).data)
+
+    @schema_anular_documento(CompraSerializer)
+    @action(detail=True, methods=['post'])
+    def anular(self, request, pk=None):
+        compra = CompraService.anular(self.get_object(), request.user)
         return Response(CompraSerializer(compra).data)
 
 
@@ -341,7 +441,12 @@ class AjusteInventarioViewSet(
     viewsets.GenericViewSet,
 ):
     serializer_class = AjusteInventarioSerializer
-    queryset = AjusteInventario.objects.select_related('estado', 'bodega').prefetch_related('detalles')
+    queryset = AjusteInventario.objects.select_related('estado', 'bodega').prefetch_related(
+        Prefetch(
+            'detalles',
+            queryset=AjusteInventarioDetalle.objects.select_related('producto', 'serie', 'lote'),
+        )
+    )
     filterset_class = AjusteInventarioFilter
     search_fields = ['numero', 'motivo']
     ordering_fields = ['numero', 'fecha_ajuste', 'created_at']
@@ -357,6 +462,11 @@ class AjusteInventarioViewSet(
         'anular': 'operations.documento.anular',
     }
 
+    @schema_crear_documento(
+        AjusteCreateSerializer,
+        AjusteInventarioSerializer,
+        'Crear ajuste de inventario en borrador.',
+    )
     def create(self, request, *args, **kwargs):
         serializer = AjusteCreateSerializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
@@ -370,6 +480,7 @@ class AjusteInventarioViewSet(
         )
         return Response(AjusteInventarioSerializer(ajuste).data, status=status.HTTP_201_CREATED)
 
+    @schema_crear_detalle(AjusteDetalleCreateSerializer)
     @action(detail=True, methods=['post'], url_path='detalles')
     def agregar_detalle(self, request, pk=None):
         serializer = AjusteDetalleCreateSerializer(data=request.data, context={'request': request})
@@ -384,17 +495,26 @@ class AjusteInventarioViewSet(
         )
         return Response({'id': detalle.id}, status=status.HTTP_201_CREATED)
 
+    @schema_accion_documento(response=AjusteInventarioSerializer, summary='Enviar ajuste a aprobación.')
     @action(detail=True, methods=['post'])
     def enviar(self, request, pk=None):
         ajuste = AjusteInventarioService.enviar(self.get_object(), request.user)
         return Response(AjusteInventarioSerializer(ajuste).data)
 
+    @schema_accion_documento(response=AjusteInventarioSerializer, summary='Aprobar ajuste pendiente.')
     @action(detail=True, methods=['post'])
     def aprobar(self, request, pk=None):
         ajuste = AjusteInventarioService.aprobar(self.get_object(), request.user)
         return Response(AjusteInventarioSerializer(ajuste).data)
 
+    @schema_accion_documento(response=AjusteInventarioSerializer, summary='Ejecutar ajuste aprobado.')
     @action(detail=True, methods=['post'])
     def ejecutar(self, request, pk=None):
         ajuste = AjusteInventarioService.ejecutar(self.get_object(), request.user)
+        return Response(AjusteInventarioSerializer(ajuste).data)
+
+    @schema_anular_documento(AjusteInventarioSerializer)
+    @action(detail=True, methods=['post'])
+    def anular(self, request, pk=None):
+        ajuste = AjusteInventarioService.anular(self.get_object(), request.user)
         return Response(AjusteInventarioSerializer(ajuste).data)

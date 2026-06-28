@@ -11,6 +11,7 @@ from inventory.services.movimiento_inventario_service import (
 )
 from inventory.services.serie_service import SerieService
 from operations.models import Traslado, TrasladoDetalle
+from operations.services.documento_anulacion_service import DocumentoAnulacionService
 from operations.services.documento_estado_service import DocumentoEstadoService
 from operations.services.exceptions import (
     BodegaOrigenDestinoIgualError,
@@ -19,6 +20,11 @@ from operations.services.exceptions import (
     TrasladoEstadoInvalidoError,
 )
 from operations.services.historial_documento_service import HistorialDocumentoService
+from operations.services.tenant_validation import (
+    validar_detalle_operacion,
+    validar_objetos_misma_empresa,
+    validar_usuario_empresa,
+)
 from security.models import Usuario
 from support.services.numerador_service import NumeradorService
 
@@ -38,6 +44,15 @@ class TrasladoService:
             raise BodegaOrigenDestinoIgualError(
                 'La bodega origen y destino no pueden ser la misma.'
             )
+
+        validar_usuario_empresa(usuario, empresa.id)
+        validar_objetos_misma_empresa(
+            empresa.id,
+            bodega_origen,
+            bodega_destino,
+            bodega_transito,
+            etiquetas=['bodega_origen', 'bodega_destino', 'bodega_transito'],
+        )
 
         numero = NumeradorService.generar_folio(empresa, Traslado.TIPO_DOCUMENTO)
         traslado = Traslado.objects.create(
@@ -70,6 +85,14 @@ class TrasladoService:
         lote: Lote | None = None,
     ) -> TrasladoDetalle:
         DocumentoEstadoService.validar_editable(traslado.estado.codigo)
+        validar_detalle_operacion(
+            traslado.empresa_id,
+            producto,
+            serie=serie,
+            lote=lote,
+            cantidad=cantidad,
+            bodega=traslado.bodega_origen,
+        )
         return TrasladoDetalle.objects.create(
             traslado=traslado,
             producto=producto,
@@ -192,6 +215,26 @@ class TrasladoService:
         estado_anterior = traslado.estado.codigo
         DocumentoEstadoService.cambiar_estado(
             traslado, Traslado.TIPO_DOCUMENTO, 'CERRADO', usuario
+        )
+        HistorialDocumentoService.registrar_cambio(
+            traslado, Traslado.TIPO_DOCUMENTO, estado_anterior, usuario
+        )
+        return traslado
+
+    @staticmethod
+    @transaction.atomic
+    def anular(traslado: Traslado, usuario: Usuario) -> Traslado:
+        traslado = Traslado.objects.select_for_update().get(pk=traslado.pk)
+        estado_anterior = traslado.estado.codigo
+        if estado_anterior in {'EN_TRANSITO', 'CERRADO'}:
+            DocumentoAnulacionService.reversar_movimientos(
+                Traslado.TIPO_DOCUMENTO,
+                traslado.pk,
+                usuario,
+                traslado.empresa_id,
+            )
+        DocumentoEstadoService.cambiar_estado(
+            traslado, Traslado.TIPO_DOCUMENTO, 'ANULADO', usuario
         )
         HistorialDocumentoService.registrar_cambio(
             traslado, Traslado.TIPO_DOCUMENTO, estado_anterior, usuario

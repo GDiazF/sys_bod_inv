@@ -15,22 +15,26 @@ class DocumentoEstadoService:
             'BORRADOR': {'PENDIENTE', 'APROBADO', 'ANULADO'},
             'PENDIENTE': {'APROBADO', 'RECHAZADO', 'ANULADO'},
             'APROBADO': {'CERRADO', 'ANULADO'},
+            'CERRADO': {'ANULADO'},
         },
         'TRASLADO': {
             'BORRADOR': {'PENDIENTE', 'ANULADO'},
             'PENDIENTE': {'APROBADO', 'RECHAZADO', 'ANULADO'},
             'APROBADO': {'EN_TRANSITO', 'ANULADO'},
             'EN_TRANSITO': {'CERRADO', 'ANULADO'},
+            'CERRADO': {'ANULADO'},
         },
         'COMPRA': {
             'BORRADOR': {'PENDIENTE', 'ANULADO'},
             'PENDIENTE': {'APROBADO', 'RECHAZADO', 'ANULADO'},
             'APROBADO': {'CERRADO', 'ANULADO'},
+            'CERRADO': {'ANULADO'},
         },
         'AJUSTE': {
             'BORRADOR': {'PENDIENTE', 'ANULADO'},
             'PENDIENTE': {'APROBADO', 'RECHAZADO', 'ANULADO'},
             'APROBADO': {'CERRADO', 'ANULADO'},
+            'CERRADO': {'ANULADO'},
         },
     }
 

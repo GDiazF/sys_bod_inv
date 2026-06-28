@@ -10,9 +10,16 @@ from inventory.services.movimiento_inventario_service import (
     MovimientoInput,
 )
 from operations.models import Compra, CompraDetalle
+from operations.services.documento_anulacion_service import DocumentoAnulacionService
 from operations.services.documento_estado_service import DocumentoEstadoService
 from operations.services.exceptions import DocumentoNoAprobadoError, DocumentoSinDetalleError
 from operations.services.historial_documento_service import HistorialDocumentoService
+from operations.services.tenant_validation import (
+    validar_compra_detalle_serializado,
+    validar_detalle_operacion,
+    validar_objetos_misma_empresa,
+    validar_usuario_empresa,
+)
 from security.models import Usuario
 from support.services.numerador_service import NumeradorService
 
@@ -28,6 +35,13 @@ class CompraService:
         fecha_compra: date | None = None,
         observacion: str | None = None,
     ) -> Compra:
+        validar_usuario_empresa(usuario, empresa.id)
+        validar_objetos_misma_empresa(
+            empresa.id,
+            proveedor,
+            bodega_destino,
+            etiquetas=['proveedor', 'bodega_destino'],
+        )
         numero = NumeradorService.generar_folio(empresa, Compra.TIPO_DOCUMENTO)
         compra = Compra.objects.create(
             empresa=empresa,
@@ -60,6 +74,15 @@ class CompraService:
         numero_serie: str | None = None,
     ) -> CompraDetalle:
         DocumentoEstadoService.validar_editable(compra.estado.codigo)
+        validar_compra_detalle_serializado(producto, cantidad, numero_serie)
+        validar_detalle_operacion(
+            compra.empresa_id,
+            producto,
+            lote=lote,
+            cantidad=cantidad,
+            bodega=compra.bodega_destino,
+            proveedor=compra.proveedor,
+        )
         return CompraDetalle.objects.create(
             compra=compra,
             producto=producto,
@@ -150,6 +173,26 @@ class CompraService:
         estado_anterior = compra.estado.codigo
         DocumentoEstadoService.cambiar_estado(
             compra, Compra.TIPO_DOCUMENTO, 'CERRADO', usuario
+        )
+        HistorialDocumentoService.registrar_cambio(
+            compra, Compra.TIPO_DOCUMENTO, estado_anterior, usuario
+        )
+        return compra
+
+    @staticmethod
+    @transaction.atomic
+    def anular(compra: Compra, usuario: Usuario) -> Compra:
+        compra = Compra.objects.select_for_update().get(pk=compra.pk)
+        estado_anterior = compra.estado.codigo
+        if estado_anterior == 'CERRADO':
+            DocumentoAnulacionService.reversar_movimientos(
+                Compra.TIPO_DOCUMENTO,
+                compra.pk,
+                usuario,
+                compra.empresa_id,
+            )
+        DocumentoEstadoService.cambiar_estado(
+            compra, Compra.TIPO_DOCUMENTO, 'ANULADO', usuario
         )
         HistorialDocumentoService.registrar_cambio(
             compra, Compra.TIPO_DOCUMENTO, estado_anterior, usuario

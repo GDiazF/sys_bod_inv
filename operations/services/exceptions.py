@@ -28,3 +28,11 @@ class BodegaOrigenDestinoIgualError(OperationsServiceError):
 
 class TrasladoEstadoInvalidoError(OperationsServiceError):
     pass
+
+
+class ObjetoEmpresaInvalidoError(OperationsServiceError):
+    pass
+
+
+class EmpresaInconsistenteError(OperationsServiceError):
+    pass

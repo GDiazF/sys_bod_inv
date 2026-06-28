@@ -4,11 +4,15 @@ from decimal import Decimal
 from django.db import transaction
 
 from core.models import CentroCosto, Empresa
-from inventory.models import Lote, Producto
+from inventory.models import Lote, Producto, Serie
 from operations.models import Solicitud, SolicitudDetalle
 from operations.services.documento_estado_service import DocumentoEstadoService
 from operations.services.exceptions import DocumentoSinDetalleError
 from operations.services.historial_documento_service import HistorialDocumentoService
+from operations.services.tenant_validation import (
+    validar_objetos_misma_empresa,
+    validar_usuario_empresa,
+)
 from security.models import Usuario
 from support.services.numerador_service import NumeradorService
 
@@ -23,6 +27,12 @@ class SolicitudService:
         fecha_solicitud: date | None = None,
         motivo: str | None = None,
     ) -> Solicitud:
+        validar_usuario_empresa(usuario, empresa.id)
+        validar_objetos_misma_empresa(
+            empresa.id,
+            centro_costo,
+            etiquetas=['centro_costo'],
+        )
         numero = NumeradorService.generar_folio(empresa, Solicitud.TIPO_DOCUMENTO)
         solicitud = Solicitud.objects.create(
             empresa=empresa,
@@ -50,11 +60,22 @@ class SolicitudService:
         producto: Producto,
         cantidad_solicitada: Decimal,
         lote: Lote | None = None,
+        serie: Serie | None = None,
     ) -> SolicitudDetalle:
         DocumentoEstadoService.validar_editable(solicitud.estado.codigo)
+        from operations.services.tenant_validation import validar_detalle_operacion
+
+        validar_detalle_operacion(
+            solicitud.empresa_id,
+            producto,
+            serie=serie,
+            lote=lote,
+            cantidad=cantidad_solicitada,
+        )
         return SolicitudDetalle.objects.create(
             solicitud=solicitud,
             producto=producto,
+            serie=serie,
             lote=lote,
             cantidad_solicitada=cantidad_solicitada,
         )
@@ -115,6 +136,9 @@ class SolicitudService:
     @staticmethod
     @transaction.atomic
     def anular(solicitud: Solicitud, usuario: Usuario) -> Solicitud:
+        from operations.services.tenant_validation import validar_usuario_empresa
+
+        validar_usuario_empresa(usuario, solicitud.empresa_id)
         solicitud = Solicitud.objects.select_for_update().get(pk=solicitud.pk)
         estado_anterior = solicitud.estado.codigo
         DocumentoEstadoService.cambiar_estado(

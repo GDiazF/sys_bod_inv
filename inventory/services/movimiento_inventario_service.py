@@ -79,10 +79,15 @@ class MovimientoInventarioService:
         if datos.bodega_destino is None:
             raise BodegaRequeridaError('La entrada requiere bodega destino.')
 
-        costo_unitario = datos.costo_unitario or Decimal('0')
+        es_traslado_interno = tipo.codigo == 'TRASLADO_ENTRADA'
+        if es_traslado_interno:
+            costo_unitario = producto.costo_promedio_actual
+        else:
+            costo_unitario = datos.costo_unitario or Decimal('0')
         costo_total = ValorizacionService.calcular_costo_total(datos.cantidad, costo_unitario)
 
-        ValorizacionService.costo_entrada(producto, datos.cantidad, costo_unitario)
+        if not es_traslado_interno:
+            ValorizacionService.costo_entrada(producto, datos.cantidad, costo_unitario)
 
         stock = StockService.obtener_stock_bloqueado(
             datos.empresa,
@@ -245,7 +250,10 @@ class MovimientoInventarioService:
         )
 
         if movimiento.serie:
-            SerieService.revertir_entrada(movimiento.serie)
+            if movimiento.tipo_movimiento.codigo == 'TRASLADO_ENTRADA':
+                SerieService.registrar_transito(movimiento.serie, None)
+            else:
+                SerieService.revertir_entrada(movimiento.serie)
 
         return MovimientoInventario.objects.create(
             empresa=movimiento.empresa,

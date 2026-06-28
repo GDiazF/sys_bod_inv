@@ -64,4 +64,6 @@ class ParametroEmpresaViewSet(
     }
 
     def get_queryset(self):
-        return ParametroEmpresa.objects.filter(empresa_id=self.get_empresa_id())
+        return ParametroEmpresa.objects.filter(
+            empresa_id=self.get_empresa_id()
+        ).select_related('metodo_costeo')

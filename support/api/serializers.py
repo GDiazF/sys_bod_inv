@@ -32,4 +32,4 @@ class AdjuntoSerializer(EmpresaScopedModelSerializer):
     class Meta:
         model = Adjunto
         fields = '__all__'
-        read_only_fields = ('empresa', 'created_at')
+        read_only_fields = ('empresa', 'created_at', 'ruta_archivo', 'subido_por')

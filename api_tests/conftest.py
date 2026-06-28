@@ -27,7 +27,6 @@ def _sync_roles(empresa):
             codigo=codigo_rol,
             defaults={'nombre': codigo_rol, 'activo': True},
         )
-        RolPermiso.objects.filter(rol=rol).delete()
         permisos_codigos = ROLE_PERMISSIONS[codigo_rol]
         if permisos_codigos == '__all__':
             permisos_codigos = list(all_permisos.keys())

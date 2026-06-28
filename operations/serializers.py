@@ -53,6 +53,7 @@ class SolicitudCreateSerializer(serializers.Serializer):
 class SolicitudDetalleCreateSerializer(serializers.Serializer):
     producto = EmpresaScopedPrimaryKeyRelatedField(Producto)
     cantidad_solicitada = serializers.DecimalField(max_digits=18, decimal_places=4)
+    serie = EmpresaScopedPrimaryKeyRelatedField(Serie, required=False, allow_null=True)
     lote = EmpresaScopedPrimaryKeyRelatedField(Lote, required=False, allow_null=True)
 
 

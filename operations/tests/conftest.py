@@ -45,7 +45,6 @@ def empresa(db, catalogos_globales):
         codigo='BODEGUERO',
         defaults={'nombre': 'Bodeguero', 'activo': True},
     )
-    RolPermiso.objects.filter(rol=rol).delete()
     all_permisos = {p.codigo: p for p in Permiso.objects.filter(activo=True)}
     for permiso_codigo in ROLE_PERMISSIONS['BODEGUERO']:
         permiso = all_permisos.get(permiso_codigo)

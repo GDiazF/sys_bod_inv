@@ -56,6 +56,10 @@ class Solicitud(models.Model):
                 name='uq_solicitud_empresa_numero',
             ),
         ]
+        indexes = [
+            models.Index(fields=['empresa', 'created_at']),
+            models.Index(fields=['empresa', 'estado']),
+        ]
         verbose_name = 'solicitud'
         verbose_name_plural = 'solicitudes'
 
@@ -70,6 +74,12 @@ class SolicitudDetalle(models.Model):
         related_name='detalles',
     )
     producto = models.ForeignKey('inventory.Producto', on_delete=models.PROTECT)
+    serie = models.ForeignKey(
+        'inventory.Serie',
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+    )
     lote = models.ForeignKey(
         'inventory.Lote',
         on_delete=models.PROTECT,
@@ -133,6 +143,10 @@ class Entrega(models.Model):
                 fields=['empresa', 'numero'],
                 name='uq_entrega_empresa_numero',
             ),
+        ]
+        indexes = [
+            models.Index(fields=['empresa', 'created_at']),
+            models.Index(fields=['empresa', 'estado']),
         ]
         verbose_name = 'entrega'
         verbose_name_plural = 'entregas'
@@ -219,6 +233,10 @@ class Traslado(models.Model):
                 name='uq_traslado_empresa_numero',
             ),
         ]
+        indexes = [
+            models.Index(fields=['empresa', 'created_at']),
+            models.Index(fields=['empresa', 'estado']),
+        ]
         verbose_name = 'traslado'
         verbose_name_plural = 'traslados'
 
@@ -288,6 +306,10 @@ class Compra(models.Model):
                 name='uq_compra_empresa_numero',
             ),
         ]
+        indexes = [
+            models.Index(fields=['empresa', 'created_at']),
+            models.Index(fields=['empresa', 'estado']),
+        ]
         verbose_name = 'compra'
         verbose_name_plural = 'compras'
 
@@ -351,6 +373,10 @@ class AjusteInventario(models.Model):
                 fields=['empresa', 'numero'],
                 name='uq_ajuste_empresa_numero',
             ),
+        ]
+        indexes = [
+            models.Index(fields=['empresa', 'created_at']),
+            models.Index(fields=['empresa', 'estado']),
         ]
         verbose_name = 'ajuste de inventario'
         verbose_name_plural = 'ajustes de inventario'

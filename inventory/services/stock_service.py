@@ -76,6 +76,13 @@ class StockService:
                 raise StockInsuficienteError(
                     'Producto serializado solo permite cantidad 1 por movimiento.'
                 )
+            nuevo_saldo = stock.cantidad - cantidad
+            if nuevo_saldo < 0:
+                raise StockInsuficienteError(
+                    f'Stock insuficiente en {stock.bodega.codigo}: '
+                    f'disponible {stock.cantidad}, requerido {cantidad}.'
+                )
+            return
         nuevo_saldo = stock.cantidad - cantidad
         if nuevo_saldo < 0 and not StockService.stock_negativo_permitido(producto, override):
             raise StockInsuficienteError(

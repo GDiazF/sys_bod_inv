@@ -119,6 +119,56 @@ class TestStockNegativo:
         )
         assert StockService.obtener_stock(bodega, producto_no_serializado) == Decimal('-3')
 
+    def test_serializado_nunca_stock_negativo_con_override(
+        self, movimiento_input_base, producto_serializado, bodega, empresa, catalogos_globales
+    ):
+        from catalogs.models import EstadoSerie
+
+        parametros = ParametroEmpresa.objects.get(empresa=empresa)
+        parametros.stock_negativo_permitido = True
+        parametros.save()
+        producto_serializado.permite_stock_negativo = True
+        producto_serializado.save()
+
+        MovimientoInventarioService.registrar_entrada_serializada(
+            movimiento_input_base(
+                producto=producto_serializado,
+                tipo_movimiento_codigo='ENTRADA_COMPRA',
+                bodega_destino=bodega,
+                costo_unitario=Decimal('500'),
+            ),
+            numero_serie='SN-NEG-A',
+        )
+        serie_a = Serie.objects.get(numero_serie='SN-NEG-A')
+        MovimientoInventarioService.registrar_movimiento(
+            movimiento_input_base(
+                producto=producto_serializado,
+                tipo_movimiento_codigo='SALIDA_ENTREGA',
+                bodega_origen=bodega,
+                serie=serie_a,
+                cantidad=Decimal('1'),
+            )
+        )
+        serie_sin_stock = Serie.objects.create(
+            empresa=empresa,
+            producto=producto_serializado,
+            numero_serie='SN-NEG-B',
+            estado_serie=EstadoSerie.objects.get(codigo='DISPONIBLE'),
+            bodega_actual=bodega,
+        )
+
+        with pytest.raises(StockInsuficienteError):
+            MovimientoInventarioService.registrar_movimiento(
+                movimiento_input_base(
+                    producto=producto_serializado,
+                    tipo_movimiento_codigo='SALIDA_ENTREGA',
+                    bodega_origen=bodega,
+                    serie=serie_sin_stock,
+                    cantidad=Decimal('1'),
+                    permitir_stock_negativo=True,
+                )
+            )
+
 
 @pytest.mark.django_db
 class TestReversa:

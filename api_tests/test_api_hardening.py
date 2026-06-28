@@ -87,6 +87,29 @@ class TestValidacionCruzadaEmpresa:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert 'centro_costo' in response.data
 
+    def test_compra_rechaza_proveedor_de_otra_empresa(
+        self,
+        api_client,
+        usuario_bodeguero_a,
+        bodega_a,
+        empresa_b,
+    ):
+        from inventory.models import Proveedor
+
+        proveedor_b = Proveedor.objects.create(
+            empresa=empresa_b,
+            rut='76.999.999-9',
+            razon_social='Proveedor B',
+        )
+        api_client.force_authenticate(user=usuario_bodeguero_a)
+        response = api_client.post(
+            '/api/v1/operations/compras/',
+            {'proveedor': proveedor_b.pk, 'bodega_destino': bodega_a.pk},
+            format='json',
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert 'proveedor' in response.data
+
 
 @pytest.mark.django_db
 class TestPaginacionYFiltros:
@@ -192,6 +215,12 @@ class TestSchemaSpectacular:
         paths = schema.get('paths', {})
         assert '/api/v1/inventory/productos/' in paths
         assert '/api/v1/operations/solicitudes/' in paths
+        for suffix in ('solicitudes', 'entregas', 'traslados', 'compras', 'ajustes'):
+            matching = [
+                path for path in paths
+                if f'/api/v1/operations/{suffix}/' in path and 'anular' in path
+            ]
+            assert matching, f'Falta ruta anular para {suffix}'
 
     def test_comando_spectacular_valida(self):
         call_command('spectacular', '--validate', verbosity=0)

@@ -58,6 +58,9 @@ class MovimientoInventarioViewSet(APIViewMixin, viewsets.ReadOnlyModelViewSet):
         'tipo_movimiento',
         'bodega_origen',
         'bodega_destino',
+        'serie',
+        'lote',
+        'created_by',
     ).order_by('-created_at')
     filterset_class = MovimientoInventarioFilter
     search_fields = ['referencia_id', 'referencia_tipo', 'producto__sku', 'producto__nombre']

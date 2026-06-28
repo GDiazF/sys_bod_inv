@@ -31,7 +31,13 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at',
         )
-        read_only_fields = ('empresa', 'ultimo_acceso_at', 'created_at', 'updated_at')
+        read_only_fields = (
+            'empresa',
+            'is_staff',
+            'ultimo_acceso_at',
+            'created_at',
+            'updated_at',
+        )
         extra_kwargs = {'password': {'write_only': True}}
 
 
@@ -40,7 +46,7 @@ class UsuarioCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Usuario
-        fields = ('email', 'nombre_completo', 'password', 'activo', 'is_staff')
+        fields = ('email', 'nombre_completo', 'password', 'activo')
 
     def create(self, validated_data):
         empresa = self.context['empresa']

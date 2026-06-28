@@ -117,7 +117,7 @@ class Command(BaseCommand):
             self.stdout.write('Empresa DEMO ya existía.')
 
         metodo_default = MetodoCosteo.objects.get(codigo='PROMEDIO_PONDERADO')
-        parametros, _ = ParametroEmpresa.objects.update_or_create(
+        parametros, parametros_created = ParametroEmpresa.objects.get_or_create(
             empresa=empresa,
             defaults={
                 'metodo_costeo': metodo_default,
@@ -126,14 +126,15 @@ class Command(BaseCommand):
                 'permite_cambio_metodo_costeo': False,
             },
         )
-        if parametros.metodo_costeo_id != metodo_default.pk:
-            parametros.metodo_costeo = metodo_default
-            parametros.save(update_fields=['metodo_costeo'])
+        if parametros_created:
+            self.stdout.write('Parámetros DEMO creados.')
+        else:
+            self.stdout.write('Parámetros DEMO ya existían (sin sobrescribir).')
 
         all_permisos = {p.codigo: p for p in Permiso.objects.filter(activo=True)}
 
         for codigo_rol, nombre, descripcion in ROLE_DEFINITIONS:
-            rol, _ = Rol.objects.update_or_create(
+            rol, rol_created = Rol.objects.update_or_create(
                 empresa=empresa,
                 codigo=codigo_rol,
                 defaults={
@@ -142,12 +143,11 @@ class Command(BaseCommand):
                     'activo': True,
                 },
             )
-            RolPermiso.objects.filter(rol=rol).delete()
-
             permisos_codigos = ROLE_PERMISSIONS[codigo_rol]
             if permisos_codigos == '__all__':
                 permisos_codigos = list(all_permisos.keys())
 
+            permisos_agregados = 0
             for permiso_codigo in permisos_codigos:
                 permiso = all_permisos.get(permiso_codigo)
                 if permiso is None:
@@ -155,9 +155,16 @@ class Command(BaseCommand):
                         self.style.WARNING(f'Permiso no encontrado: {permiso_codigo}')
                     )
                     continue
-                RolPermiso.objects.get_or_create(rol=rol, permiso=permiso)
+                _, created_permiso = RolPermiso.objects.get_or_create(rol=rol, permiso=permiso)
+                if created_permiso:
+                    permisos_agregados += 1
 
-            self.stdout.write(f'Rol {codigo_rol}: {len(permisos_codigos)} permisos asignados.')
+            accion = 'creado' if rol_created else 'sincronizado'
+            self.stdout.write(
+                f'Rol {codigo_rol} {accion}: '
+                f'{permisos_agregados} permisos nuevos, '
+                f'{RolPermiso.objects.filter(rol=rol).count()} permisos totales.'
+            )
 
         for tipo_documento, prefijo, longitud in NUMERADORES_DEMO:
             NumeradorService.obtener_o_crear(
