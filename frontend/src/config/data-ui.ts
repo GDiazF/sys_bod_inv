@@ -1,0 +1,52 @@
+/** Textos de UI para componentes de datos (no lógica de negocio). */
+export const DATA_UI = {
+  pagination: {
+    navLabel: 'Paginación',
+    prev: 'Página anterior',
+    next: 'Página siguiente',
+    empty: '0 de 0',
+    defaultItemLabel: 'registros',
+  },
+  dataView: {
+    loading: 'Cargando datos…',
+    emptyTitle: 'Sin resultados',
+    emptyDescription: 'No hay registros que coincidan con los criterios actuales.',
+    errorTitle: 'Error al cargar datos',
+    errorDescription: 'No se pudo obtener la información. Intente de nuevo.',
+    retry: 'Reintentar',
+  },
+  dashboard: {
+    loading: 'Cargando dashboard…',
+    emptyTitle: 'Sin actividad',
+    emptyDescription: 'No hay movimientos recientes para mostrar.',
+    errorTitle: 'Dashboard no disponible',
+    errorDescription: 'No se pudo cargar el resumen operativo.',
+    activityCaption: 'Actividad reciente de movimientos',
+    pendingDocsCaption: 'Documentos pendientes de confirmación',
+  },
+  filterBar: {
+    searchPlaceholder: 'Buscar…',
+    apply: 'Filtrar',
+    clear: 'Limpiar',
+  },
+  movimientos: {
+    loading: 'Cargando movimientos…',
+    emptyTitle: 'Sin movimientos',
+    emptyDescription: 'No hay registros que coincidan con los filtros aplicados.',
+    errorTitle: 'Error al cargar movimientos',
+    errorDescription: 'No se pudo obtener el historial. Intente de nuevo.',
+    searchPlaceholder: 'Documento, SKU, operador…',
+    caption: 'Historial de movimientos de inventario',
+    paginationLabel: 'movimientos',
+  },
+  productos: {
+    loading: 'Cargando catálogo…',
+    emptyTitle: 'Sin productos',
+    emptyDescription: 'No hay artículos que coincidan con los filtros aplicados.',
+    errorTitle: 'Error al cargar catálogo',
+    errorDescription: 'No se pudo obtener el listado de productos. Intente de nuevo.',
+    searchPlaceholder: 'SKU, nombre, categoría…',
+    caption: 'Catálogo de productos',
+    paginationLabel: 'productos',
+  },
+} as const

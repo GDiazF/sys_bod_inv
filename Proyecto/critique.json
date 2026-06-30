@@ -1,0 +1,11 @@
+{
+  "kind": "critique-panel",
+  "score": 4,
+  "axes": {
+    "clarity": { "score": 4, "notes": "Capa API/UI separada; estados loading/empty/error visibles en tablas dinámicas." },
+    "hierarchy": { "score": 4, "notes": "Identidad industrial premium intacta; focus-visible y toasts mejoran feedback operativo." },
+    "typography": { "score": 4, "notes": "Sin cambios de sistema tipográfico; consistencia mantenida entre pantallas." },
+    "motion": { "score": 4, "notes": "Loading en acciones, toast-out, debounce en filtros; respeta prefers-reduced-motion." },
+    "brand": { "score": 4, "notes": "Sin alteración de tokens ni shell; eliminado indicador de breakpoint de desarrollo." }
+  }
+}

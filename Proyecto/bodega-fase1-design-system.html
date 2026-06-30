@@ -1,0 +1,1469 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bodega · Fase 1 — Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:           oklch(97.5% 0.008 250);
+      --bg-grid:      oklch(88% 0.014 250 / 0.28);
+      --surface:      oklch(99% 0.004 250);
+      --surface-raised: oklch(100% 0 0);
+      --surface-inset:  oklch(95.2% 0.012 250);
+      --fg:           oklch(21% 0.024 250);
+      --muted:        oklch(48% 0.02 250);
+      --border:       oklch(89% 0.012 250);
+      --border-strong: oklch(80% 0.016 250);
+      --steel:        oklch(34% 0.028 250);
+      --steel-mid:    oklch(55% 0.022 250);
+      --steel-light:  oklch(91% 0.014 250);
+      --accent:       oklch(52% 0.16 148);
+      --accent-bright: oklch(58% 0.17 148);
+      --accent-muted: oklch(96% 0.035 148);
+      --accent-fg:    oklch(100% 0 0);
+      --teal:         oklch(46% 0.09 195);
+      --teal-bg:      oklch(96% 0.025 195);
+      --warn:         oklch(66% 0.14 72);
+      --warn-bg:      oklch(97% 0.04 72);
+      --danger:       oklch(50% 0.18 25);
+      --danger-bg:    oklch(97% 0.03 25);
+      --success:      oklch(52% 0.16 148);
+      --success-bg:   oklch(96.5% 0.04 148);
+      --info:         oklch(48% 0.11 240);
+      --info-bg:      oklch(96.5% 0.025 240);
+
+      --sidebar-bg:     oklch(98.5% 0.006 250);
+      --sidebar-surface: oklch(96% 0.01 250);
+      --sidebar-fg:     oklch(24% 0.024 250);
+      --sidebar-muted:  oklch(50% 0.018 250);
+      --sidebar-border: oklch(90% 0.012 250);
+      --sidebar-rail:   oklch(76% 0.018 250);
+      --sidebar-accent: oklch(52% 0.16 148);
+
+      --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      --font-body:    'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --font-mono:    'IBM Plex Mono', ui-monospace, Menlo, monospace;
+
+      --sidebar-w: 252px;
+      --header-h: 60px;
+      --radius-sm: 3px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --shadow-sm: 0 1px 2px oklch(22% 0.02 250 / 0.05), 0 0 0 1px oklch(22% 0.02 250 / 0.03);
+      --shadow-md: 0 8px 24px oklch(22% 0.02 250 / 0.07), 0 2px 4px oklch(22% 0.02 250 / 0.04);
+      --shadow-panel: 0 1px 0 oklch(100% 0 0 / 0.85) inset, 0 1px 3px oklch(22% 0.02 250 / 0.05);
+
+      --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+      --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
+
+      --content-gutter: var(--space-6);
+      --content-readable: 68ch;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* App shell — fixed viewport, no page scroll */
+    .app {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar — rail industrial, numeración operativa */
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--sidebar-border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: width 0.2s ease;
+      position: relative;
+    }
+    .sidebar::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--steel-light) 0%, var(--sidebar-rail) 50%, var(--steel-light) 100%);
+      z-index: 2;
+    }
+    .sidebar-brand {
+      height: var(--header-h);
+      padding: 0 var(--space-4) 0 calc(var(--space-4) + 3px);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      border-bottom: 1px solid var(--sidebar-border);
+      flex-shrink: 0;
+      background: var(--sidebar-bg);
+    }
+    .sidebar-brand-mark {
+      width: 34px; height: 34px;
+      background: var(--accent);
+      border-radius: 4px 4px 4px 0;
+      clip-path: polygon(0 0, 100% 0, 100% 72%, 82% 100%, 0 100%);
+      display: grid; place-items: center;
+      color: var(--accent-fg);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: -0.06em;
+    }
+    .sidebar-brand-text {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.03em;
+      color: var(--sidebar-fg);
+    }
+    .sidebar-brand-sub {
+      font-size: 10px;
+      color: var(--sidebar-muted);
+      font-family: var(--font-mono);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-3) var(--space-3) var(--space-3) calc(var(--space-3) + 3px);
+      counter-reset: nav-index;
+    }
+    .nav-group-label {
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--steel-mid);
+      padding: var(--space-4) var(--space-3) var(--space-2);
+      font-family: var(--font-mono);
+    }
+    .nav-group-label::before {
+      content: '▸ ';
+      color: var(--sidebar-rail);
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 7px var(--space-3);
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--sidebar-muted);
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .nav-item::before {
+      counter-increment: nav-index;
+      content: counter(nav-index, decimal-leading-zero);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--steel-mid);
+      opacity: 0.55;
+      min-width: 20px;
+      letter-spacing: 0.04em;
+    }
+    .nav-item:hover {
+      background: var(--sidebar-surface);
+      color: var(--sidebar-fg);
+      border-color: var(--sidebar-border);
+    }
+    .nav-item:hover::before { opacity: 0.85; color: var(--steel); }
+    .nav-item.active {
+      background: var(--surface-raised);
+      border-color: var(--sidebar-border);
+      color: var(--sidebar-fg);
+      font-weight: 500;
+      box-shadow: var(--shadow-sm), inset 3px 0 0 var(--accent);
+    }
+    .nav-item.active::before {
+      color: var(--accent);
+      opacity: 1;
+    }
+    .nav-icon {
+      width: 18px; height: 18px;
+      opacity: 0.45;
+      flex-shrink: 0;
+    }
+    .nav-item:hover .nav-icon { opacity: 0.7; }
+    .nav-item.active .nav-icon { opacity: 1; color: var(--accent); }
+
+    /* Main area */
+    .main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .topbar {
+      height: var(--header-h);
+      flex-shrink: 0;
+      background: var(--surface-raised);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--space-6);
+      gap: var(--space-4);
+      position: relative;
+    }
+    .topbar::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: min(180px, 22%);
+      height: 2px;
+      background: var(--accent);
+    }
+    .topbar-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+    }
+    .topbar-meta {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .topbar-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--steel-mid);
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface-inset);
+    }
+    .topbar-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 1px;
+      background: var(--accent);
+      box-shadow: 0 0 0 2px oklch(52% 0.16 148 / 0.2);
+    }
+    .topbar-actions { display: flex; gap: var(--space-3); align-items: center; }
+    .viewport-toggle {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--surface-inset);
+      box-shadow: var(--shadow-sm);
+    }
+    .viewport-btn {
+      padding: var(--space-1) var(--space-3);
+      border: none;
+      background: transparent;
+      font: 500 11px var(--font-mono);
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s;
+    }
+    .viewport-btn:hover { color: var(--fg); }
+    .viewport-btn.active {
+      background: var(--accent);
+      color: var(--accent-fg);
+    }
+    .sidebar-toggle {
+      display: none;
+      padding: var(--space-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      cursor: pointer;
+    }
+
+    /* Content — rejilla operativa sutil, full-width */
+    .content {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: var(--space-6) var(--content-gutter);
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(var(--bg-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+      background-size: 32px 32px;
+      background-position: center top;
+    }
+    .content-inner {
+      width: 100%;
+      max-width: none;
+    }
+
+    /* Typography */
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(24px, 3.2vw, 32px);
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      padding-left: var(--space-4);
+      border-left: 3px solid var(--steel-light);
+      position: relative;
+    }
+    h1::before {
+      content: '';
+      position: absolute;
+      left: -3px;
+      top: 0;
+      width: 3px;
+      height: 32%;
+      min-height: 14px;
+      background: var(--accent);
+    }
+    h2 {
+      font-family: var(--font-display);
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-4);
+    }
+    h3 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: var(--space-3);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    p.lead { color: var(--muted); max-width: var(--content-readable); margin-top: var(--space-3); line-height: 1.65; font-size: 14.5px; }
+    .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+    .page-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 5px 10px 5px 8px;
+      border: 1px solid var(--border-strong);
+      border-left: 3px solid var(--accent);
+      background: var(--surface-raised);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--steel);
+      margin-bottom: var(--space-3);
+      box-shadow: var(--shadow-sm);
+    }
+    .page-eyebrow::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      background: var(--accent);
+      border-radius: 1px;
+      flex-shrink: 0;
+    }
+
+    /* Sections */
+    .section { display: none; }
+    .section.active { display: block; }
+    .section + .section { margin-top: 0; }
+
+    /* Cards / panels — capas + marcas de registro industrial */
+    .panel {
+      background: var(--surface-raised);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-panel);
+      position: relative;
+    }
+    .panel:not(.panel-inset)::before,
+    .panel:not(.panel-inset)::after {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.45;
+    }
+    .panel:not(.panel-inset)::before {
+      top: 5px; left: 5px;
+      border-top: 1.5px solid var(--steel-mid);
+      border-left: 1.5px solid var(--steel-mid);
+    }
+    .panel:not(.panel-inset)::after {
+      bottom: 5px; right: 5px;
+      border-bottom: 1.5px solid var(--steel-mid);
+      border-right: 1.5px solid var(--steel-mid);
+    }
+    .panel-inset {
+      background: var(--surface-inset);
+      box-shadow: inset 0 1px 3px oklch(18% 0.03 235 / 0.06);
+    }
+    .panel-accent {
+      border-color: oklch(54% 0.17 148 / 0.25);
+      box-shadow: var(--shadow-panel), 0 0 0 1px oklch(54% 0.17 148 / 0.08);
+    }
+    .panel-header {
+      padding: var(--space-3) var(--space-5);
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, var(--surface-raised) 0%, oklch(98.5% 0.006 250) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+    .panel-header strong {
+      font-family: var(--font-display);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .panel-header strong::before {
+      content: attr(data-zone);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--steel-mid);
+      padding: 2px 6px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface-inset);
+    }
+    .panel-header strong:not([data-zone])::before { display: none; }
+    .panel-body { padding: var(--space-5); }
+    .panel-scroll {
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    /* Grid layouts — expansivos en desktop */
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-3); }
+    .grid-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-4); }
+    .stack { display: flex; flex-direction: column; gap: var(--space-4); }
+    .stack-lg { gap: var(--space-6); }
+    .mt-4 { margin-top: var(--space-4); }
+    .mt-6 { margin-top: var(--space-6); }
+
+    /* Token swatches */
+    .swatch {
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      border: 1px solid var(--border);
+      min-height: 72px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .swatch-label { font-size: 11px; font-weight: 500; }
+    .swatch-value { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-md);
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+      white-space: nowrap;
+    }
+    .btn:active:not(:disabled) { transform: translateY(1px); }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--accent-fg);
+      box-shadow: 0 1px 2px oklch(52% 0.16 148 / 0.2);
+    }
+    .btn-primary:hover { background: oklch(46% 0.15 148); }
+    .btn-secondary {
+      background: var(--surface-raised);
+      border-color: var(--border-strong);
+      color: var(--fg);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-secondary:hover { background: var(--surface-inset); }
+    .btn-ghost { background: transparent; color: var(--fg); }
+    .btn-ghost:hover { background: oklch(94% 0.012 235); }
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+      box-shadow: 0 1px 2px oklch(50% 0.18 25 / 0.2);
+    }
+    .btn-sm { padding: var(--space-1) var(--space-3); font-size: 12px; }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    /* Form controls */
+    .field { display: flex; flex-direction: column; gap: var(--space-1); }
+    .label { font-size: 12px; font-weight: 500; color: var(--fg); }
+    .hint { font-size: 11px; color: var(--muted); }
+    .input, .select, .textarea {
+      padding: var(--space-2) var(--space-3);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      font: inherit;
+      font-size: 13px;
+      background: var(--surface-raised);
+      color: var(--fg);
+      width: 100%;
+      box-shadow: inset 0 1px 2px oklch(18% 0.03 235 / 0.04);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .input:focus, .select:focus, .textarea:focus {
+      outline: 2px solid oklch(54% 0.17 148 / 0.3);
+      outline-offset: 0;
+      border-color: var(--accent);
+      box-shadow: inset 0 1px 2px oklch(18% 0.03 235 / 0.04), 0 0 0 3px oklch(54% 0.17 148 / 0.1);
+    }
+    .textarea { min-height: 72px; resize: vertical; }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px 3px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 500;
+      font-family: var(--font-mono);
+      border: 1px solid transparent;
+      letter-spacing: 0.02em;
+    }
+    .badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .badge-success { background: var(--success-bg); color: oklch(36% 0.13 148); border-color: oklch(54% 0.17 148 / 0.2); }
+    .badge-success::before { background: var(--success); }
+    .badge-warn { background: var(--warn-bg); color: oklch(40% 0.12 72); border-color: oklch(68% 0.15 72 / 0.25); }
+    .badge-warn::before { background: var(--warn); }
+    .badge-danger { background: var(--danger-bg); color: oklch(40% 0.14 25); border-color: oklch(52% 0.19 25 / 0.2); }
+    .badge-danger::before { background: var(--danger); }
+    .badge-neutral { background: oklch(93% 0.01 235); color: var(--muted); border-color: var(--border); }
+    .badge-neutral::before { background: var(--muted); }
+    .badge-info { background: var(--teal-bg); color: var(--teal); border-color: oklch(48% 0.10 195 / 0.2); }
+    .badge-info::before { background: oklch(52% 0.12 195); }
+
+    /* Table */
+    .table-wrap {
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      max-height: min(420px, calc(100vh - 260px));
+      width: 100%;
+      box-shadow: var(--shadow-panel);
+    }
+    .table-scroll { overflow: auto; flex: 1; min-height: 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    thead th {
+      position: sticky;
+      top: 0;
+      background: var(--steel-light);
+      text-align: left;
+      padding: 10px var(--space-4);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--steel);
+      border-bottom: 2px solid var(--accent);
+      white-space: nowrap;
+      z-index: 1;
+    }
+    thead th:not(:last-child),
+    tbody td:not(:last-child) {
+      border-right: 1px solid oklch(88% 0.012 250 / 0.7);
+    }
+    tbody td {
+      padding: 10px var(--space-4);
+      border-bottom: 1px solid var(--border);
+      font-variant-numeric: tabular-nums;
+      background: var(--surface-raised);
+    }
+    tbody tr:nth-child(even) td { background: oklch(98.2% 0.008 250); }
+    tbody tr:hover td { background: var(--accent-muted); }
+    tbody tr:last-child td { border-bottom: none; }
+    td.mono { font-family: var(--font-mono); font-size: 12px; font-weight: 500; }
+
+    /* Code blocks */
+    .code {
+      background: oklch(18% 0.02 240);
+      color: oklch(88% 0.01 240);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.7;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .code .cm { color: oklch(55% 0.02 240); }
+    .code .kw { color: oklch(72% 0.12 145); }
+    .code .str { color: oklch(78% 0.08 75); }
+
+    /* Priority list */
+    .priority-list { list-style: none; }
+    .priority-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-3) 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .priority-list li:last-child { border-bottom: none; }
+    .priority-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+    }
+    .p0 { background: var(--success-bg); color: oklch(36% 0.13 148); border: 1px solid oklch(54% 0.17 148 / 0.2); }
+    .p1 { background: var(--teal-bg); color: var(--teal); border: 1px solid oklch(48% 0.10 195 / 0.2); }
+    .p2 { background: oklch(93% 0.01 235); color: var(--muted); border: 1px solid var(--border); }
+
+    /* Split demo — listado + detalle operativo */
+    .split-demo {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 30%);
+      gap: var(--space-4);
+      height: min(480px, calc(100vh - 280px));
+      width: 100%;
+    }
+    .split-main, .split-side {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* Stat cards — etiquetas de inventario, cada una distinta */
+    .stat {
+      padding: var(--space-5);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      background: var(--surface-raised);
+      box-shadow: var(--shadow-panel);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat--hero {
+      background: var(--surface-raised);
+      border-color: oklch(52% 0.16 148 / 0.22);
+      border-top: 3px solid var(--accent);
+    }
+    .stat--hero::before {
+      content: '';
+      position: absolute;
+      top: 3px; left: 0; right: 0;
+      height: 6px;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--steel) 0 2px,
+        transparent 2px 5px,
+        var(--accent) 5px 7px,
+        transparent 7px 11px
+      );
+      opacity: 0.22;
+    }
+    .stat--accent {
+      border-left: 4px solid var(--accent);
+      padding-left: calc(var(--space-5) - 3px);
+      background: linear-gradient(90deg, var(--accent-muted) 0%, var(--surface-raised) 38%);
+    }
+    .stat--inset {
+      background: var(--surface-inset);
+      box-shadow: inset 0 1px 4px oklch(22% 0.02 250 / 0.06);
+      border-style: dashed;
+      border-color: var(--steel-mid);
+      border-width: 1.5px;
+    }
+    .stat--dark {
+      background: var(--surface-raised);
+      border-color: var(--border-strong);
+      color: var(--fg);
+      border-top: 3px solid var(--steel);
+    }
+    .stat--dark::after {
+      content: 'WMS';
+      position: absolute;
+      top: var(--space-3);
+      right: var(--space-4);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      color: var(--steel-mid);
+      opacity: 0.5;
+    }
+    .stat--dark .stat-label { color: var(--muted); }
+    .stat--dark .stat-value { color: var(--fg); }
+    .stat--dark .stat-kicker { color: var(--muted); }
+    .stat-kicker {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: var(--space-2);
+    }
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.05;
+    }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: var(--space-2); line-height: 1.4; }
+
+    /* Modal demo */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: oklch(0% 0 0 / 0.4);
+      display: none;
+      place-items: center;
+      z-index: 100;
+      padding: var(--space-4);
+    }
+    .modal-backdrop.open { display: grid; }
+    .modal {
+      background: var(--surface-raised);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-strong);
+      box-shadow: var(--shadow-md);
+      width: 100%;
+      max-width: 440px;
+      overflow: hidden;
+    }
+    .modal-header strong {
+      font-family: var(--font-display);
+      font-size: 17px;
+      letter-spacing: -0.02em;
+    }
+    .modal-header {
+      padding: var(--space-5);
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-body { padding: var(--space-5); }
+    .modal-footer {
+      padding: var(--space-4) var(--space-5);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--space-2);
+    }
+
+    /* Responsive rules callout */
+    .callout {
+      padding: var(--space-5);
+      border: 1px solid oklch(52% 0.16 148 / 0.15);
+      border-left: 3px solid var(--accent);
+      background: var(--accent-muted);
+      border-radius: var(--radius-lg);
+      font-size: 13px;
+      box-shadow: var(--shadow-sm);
+    }
+    .callout strong {
+      display: block;
+      margin-bottom: var(--space-2);
+      font-family: var(--font-display);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    /* Breakpoint indicator */
+    .bp-indicator {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: var(--space-1) var(--space-3);
+      background: var(--surface-inset);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+    }
+
+    /* Component row */
+    .component-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      align-items: center;
+    }
+
+    /* Type scale */
+    .type-row {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-4);
+      padding: var(--space-2) 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--muted); width: 100px; flex-shrink: 0; }
+
+    /* Desktop amplio — aprovechar ancho horizontal */
+    @media (min-width: 1280px) {
+      :root {
+        --content-gutter: var(--space-8);
+        --sidebar-w: 260px;
+      }
+      .split-demo {
+        grid-template-columns: minmax(0, 1fr) minmax(320px, 26%);
+        height: min(520px, calc(100vh - 240px));
+      }
+      .table-wrap { max-height: min(520px, calc(100vh - 220px)); }
+      .panel-scroll { max-height: 360px; }
+    }
+
+    @media (min-width: 1536px) {
+      :root { --content-gutter: clamp(32px, 3vw, 48px); }
+      .split-demo { grid-template-columns: minmax(0, 1fr) 400px; }
+      .grid-4.swatch-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+    }
+
+    /* Tablet */
+    @media (max-width: 1024px) {
+      .grid-4, .grid-stats { grid-template-columns: repeat(2, 1fr); }
+      .grid-3 { grid-template-columns: repeat(2, 1fr); }
+      .split-demo { grid-template-columns: 1fr; height: auto; }
+      .split-side { max-height: 200px; }
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      :root { --sidebar-w: 0px; }
+      .sidebar {
+        position: fixed;
+        left: 0; top: 0; bottom: 0;
+        width: 260px;
+        z-index: 50;
+        transform: translateX(-100%);
+        transition: transform 0.2s ease;
+      }
+      .sidebar.open { transform: translateX(0); width: 260px; }
+      .sidebar-toggle { display: block; }
+      .grid-2, .grid-3, .grid-4, .grid-stats { grid-template-columns: 1fr; }
+      .content { padding: var(--space-4); background-size: 24px 24px; }
+      :root { --content-gutter: var(--space-4); }
+      .topbar { padding: 0 var(--space-4); }
+      .topbar::after { width: 80px; }
+      .topbar-status { display: none; }
+      .viewport-toggle { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-mark">BX</div>
+        <div>
+          <div class="sidebar-brand-text">BodegaX</div>
+          <div class="sidebar-brand-sub">CMD · Fase 1</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav" aria-label="Secciones del design system">
+        <div class="nav-group-label">Documentación</div>
+        <button class="nav-item active" data-section="resumen">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          Resumen
+        </button>
+        <button class="nav-item" data-section="tokens">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+          Tokens
+        </button>
+        <button class="nav-item" data-section="componentes">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Componentes
+        </button>
+        <button class="nav-item" data-section="arquitectura">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+          Arquitectura
+        </button>
+        <button class="nav-item" data-section="responsive">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          Responsive
+        </button>
+      </nav>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button class="sidebar-toggle" id="sidebarToggle" aria-label="Abrir menú">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          </button>
+          <div>
+            <div class="topbar-title" id="topbarTitle">Resumen · Fase 1</div>
+            <div class="topbar-meta">React + TypeScript + Tailwind CSS</div>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <div class="topbar-status" aria-label="Estado del sistema">
+            <span class="topbar-status-dot"></span>
+            Operativo
+          </div>
+          <span class="bp-indicator" id="bpIndicator">—</span>
+          <div class="viewport-toggle" role="group" aria-label="Simular viewport">
+            <button class="viewport-btn active" data-vp="desktop">Desktop</button>
+            <button class="viewport-btn" data-vp="tablet">Tablet</button>
+            <button class="viewport-btn" data-vp="mobile">Móvil</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="content" id="content">
+        <div class="content-inner">
+
+          <!-- RESUMEN -->
+          <section class="section active" id="sec-resumen">
+            <div class="page-eyebrow">WMS · Fase 1</div>
+            <h1>Base visual y arquitectura</h1>
+            <p class="lead">Design system centralizado para operaciones de bodega e inventario. Esta fase define tokens, componentes reutilizables, estructura de carpetas y reglas de layout — sin pantallas funcionales ni lógica de negocio.</p>
+
+            <div class="grid-stats mt-6">
+              <div class="stat stat--hero">
+                <div class="stat-kicker">Tokens</div>
+                <div class="stat-value">6</div>
+                <div class="stat-label">Colores semánticos + capas de superficie</div>
+              </div>
+              <div class="stat stat--accent">
+                <div class="stat-kicker">Componentes</div>
+                <div class="stat-value">18</div>
+                <div class="stat-label">Átomos y patrones base priorizados</div>
+              </div>
+              <div class="stat stat--inset">
+                <div class="stat-kicker">Breakpoints</div>
+                <div class="stat-value">3</div>
+                <div class="stat-label">Desktop · tablet · móvil</div>
+              </div>
+              <div class="stat stat--dark">
+                <div class="stat-kicker">Layout</div>
+                <div class="stat-value">100%</div>
+                <div class="stat-label">Ancho operativo en desktop</div>
+              </div>
+            </div>
+
+            <div class="stack stack-lg mt-6">
+              <div class="panel panel-accent">
+                <div class="panel-header"><strong data-zone="SYS">Decisiones arquitectónicas</strong></div>
+                <div class="panel-body">
+                  <ul style="padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted);">
+                    <li><strong style="color:var(--fg)">Identidad industrial premium</strong> — base luminosa tipo command center, rejilla operativa sutil, rails steel en navegación, verde reservado para acciones y estados.</li>
+                    <li><strong style="color:var(--fg)">Layout operativo full-width</strong> — el contenido principal ocupa todo el ancho disponible; solo el texto introductorio limita legibilidad (~68ch).</li>
+                    <li><strong style="color:var(--fg)">Shell fijo 100vh</strong> — el scroll vive en paneles internos, nunca en el body.</li>
+                    <li><strong style="color:var(--fg)">Tokens en Tailwind extend</strong> — una sola fuente de verdad en <span class="mono">tailwind.config.ts</span>.</li>
+                    <li><strong style="color:var(--fg)">Componentes atómicos en <span class="mono">ui/</span></strong> — patrones compuestos en <span class="mono">patterns/</span>.</li>
+                    <li><strong style="color:var(--fg)">Convención PascalCase</strong> — archivos de componente = nombre del export.</li>
+                    <li><strong style="color:var(--fg)">Utilidad <span class="mono">cn()</span></strong> — merge de clases con <span class="mono">clsx</span> + <span class="mono">tailwind-merge</span>.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="callout">
+                <strong>Listo para Fase 2</strong>
+                Una vez aprobada esta base, se pueden construir módulos funcionales (dashboard, movimientos, recepción, despacho) reutilizando AppShell, TableShell, FilterBar y formularios sin duplicar estilos.
+              </div>
+            </div>
+          </section>
+
+          <!-- TOKENS -->
+          <section class="section" id="sec-tokens">
+            <div class="page-eyebrow">DS · Tokens</div>
+            <h1>Tokens globales</h1>
+            <p class="lead">Configuración centralizada en <span class="mono">tailwind.config.ts</span> y variables CSS en <span class="mono">globals.css</span>. Paleta steel + verde operacional, tipografía display/body/mono con jerarquía de command center.</p>
+
+            <div class="stack stack-lg mt-6">
+              <div>
+                <h2>Color</h2>
+                <div class="grid-4 swatch-grid">
+                  <div class="swatch" style="background:var(--bg)"><span class="swatch-label">bg</span><span class="swatch-value">oklch(96.5% 0.012 235)</span></div>
+                  <div class="swatch" style="background:var(--surface-raised)"><span class="swatch-label">surface</span><span class="swatch-value">oklch(100% 0.002 235)</span></div>
+                  <div class="swatch" style="background:var(--fg);color:white"><span class="swatch-label">fg</span><span class="swatch-value" style="color:oklch(80% 0 0)">oklch(20% 0.025 235)</span></div>
+                  <div class="swatch" style="background:var(--muted);color:white"><span class="swatch-label">muted</span><span class="swatch-value" style="color:oklch(85% 0 0)">oklch(48% 0.02 235)</span></div>
+                  <div class="swatch" style="background:var(--border)"><span class="swatch-label">border</span><span class="swatch-value">oklch(88% 0.012 235)</span></div>
+                  <div class="swatch" style="background:var(--accent);color:white"><span class="swatch-label">accent</span><span class="swatch-value" style="color:oklch(85% 0.04 148)">oklch(54% 0.17 148)</span></div>
+                  <div class="swatch" style="background:var(--success-bg)"><span class="swatch-label">success</span><span class="swatch-value">estado · stock OK</span></div>
+                  <div class="swatch" style="background:var(--teal-bg)"><span class="swatch-label">teal</span><span class="swatch-value">estado · en tránsito</span></div>
+                </div>
+              </div>
+
+              <div>
+                <h2>Tipografía</h2>
+                <div class="panel">
+                  <div class="panel-body">
+                    <div class="type-row"><span class="type-meta">display / xl</span><span style="font-family:var(--font-display);font-size:32px;font-weight:700;letter-spacing:-0.035em">Inventario general</span></div>
+                    <div class="type-row"><span class="type-meta">heading / lg</span><span style="font-family:var(--font-display);font-size:19px;font-weight:600;letter-spacing:-0.02em">Recepción de mercancía</span></div>
+                    <div class="type-row"><span class="type-meta">body / base</span><span style="font-family:var(--font-body);font-size:14px">Registro de entrada con validación de lote.</span></div>
+                    <div class="type-row"><span class="type-meta">caption / sm</span><span style="font-family:var(--font-body);font-size:12px;color:var(--muted)">Última actualización · hace 4 min</span></div>
+                    <div class="type-row"><span class="type-meta">mono / code</span><span class="mono" style="font-size:12px;font-weight:500">SKU-004821 · LOTE-2026-A17</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid-2">
+                <div>
+                  <h2>Espaciado</h2>
+                  <div class="panel"><div class="panel-body mono" style="font-size:12px;line-height:2">
+                    space-1: 4px · space-2: 8px · space-3: 12px<br>
+                    space-4: 16px · space-5: 20px · space-6: 24px<br>
+                    space-8: 32px · space-10: 40px
+                  </div></div>
+                </div>
+                <div>
+                  <h2>Breakpoints</h2>
+                  <div class="panel"><div class="panel-body mono" style="font-size:12px;line-height:2">
+                    sm: 640px · md: 768px<br>
+                    lg: 1024px · xl: 1280px<br>
+                    2xl: 1536px
+                  </div></div>
+                </div>
+              </div>
+
+              <div>
+                <h2>tailwind.config.ts (extracto)</h2>
+                <div class="code"><span class="cm">// theme.extend — fuente única de tokens</span>
+<span class="kw">colors</span>: {
+  bg: <span class="str">'oklch(96.5% 0.012 235)'</span>,
+  surface: { DEFAULT: <span class="str">'...'</span>, raised: <span class="str">'...'</span>, inset: <span class="str">'...'</span> },
+  fg: <span class="str">'oklch(20% 0.025 235)'</span>,
+  accent: { DEFAULT: <span class="str">'oklch(54% 0.17 148)'</span>, bright: <span class="str">'...'</span> },
+  sidebar: { bg: <span class="str">'oklch(98.8% 0.004 240)'</span>, accent: <span class="str">'oklch(52% 0.16 148)'</span> },
+  teal: { DEFAULT: <span class="str">'oklch(48% 0.10 195)'</span>, bg: <span class="str">'...'</span> },
+  success: { DEFAULT: <span class="str">'...'</span>, bg: <span class="str">'...'</span> },
+  warn:    { DEFAULT: <span class="str">'...'</span>, bg: <span class="str">'...'</span> },
+  danger:  { DEFAULT: <span class="str">'...'</span>, bg: <span class="str">'...'</span> },
+},
+<span class="kw">borderRadius</span>: { sm: <span class="str">'5px'</span>, md: <span class="str">'8px'</span>, lg: <span class="str">'12px'</span> },
+<span class="kw">fontFamily</span>: {
+  display: [<span class="str">'Plus Jakarta Sans'</span>, <span class="str">'system-ui'</span>],
+  sans: [<span class="str">'IBM Plex Sans'</span>, <span class="str">'system-ui'</span>],
+  mono: [<span class="str">'IBM Plex Mono'</span>, <span class="str">'monospace'</span>],
+}</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- COMPONENTES -->
+          <section class="section" id="sec-componentes">
+            <div class="page-eyebrow">UI · Catálogo</div>
+            <h1>Componentes base</h1>
+            <p class="lead">Catálogo visual de átomos y patrones reutilizables. Prioridad P0 primero en implementación.</p>
+
+            <div class="stack stack-lg mt-6">
+              <div class="panel">
+                <div class="panel-header"><strong data-zone="BTN">Botones</strong><span class="badge badge-neutral">ui/Button</span></div>
+                <div class="panel-body component-row">
+                  <button class="btn btn-primary">Confirmar recepción</button>
+                  <button class="btn btn-secondary">Cancelar</button>
+                  <button class="btn btn-ghost">Ver historial</button>
+                  <button class="btn btn-danger btn-sm">Anular movimiento</button>
+                  <button class="btn btn-primary" disabled>Deshabilitado</button>
+                </div>
+              </div>
+
+              <div class="panel panel-inset">
+                <div class="panel-header"><strong data-zone="FRM">Formulario</strong><span class="badge badge-neutral">ui/Input · Select · Label</span></div>
+                <div class="panel-body grid-2">
+                  <div class="field">
+                    <label class="label" for="sku">Código SKU</label>
+                    <input class="input mono" id="sku" type="text" placeholder="SKU-000000" />
+                    <span class="hint">Formato alfanumérico, 6–12 caracteres</span>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="ubic">Ubicación</label>
+                    <select class="select" id="ubic">
+                      <option>Pasillo A · Estante 03</option>
+                      <option>Pasillo B · Estante 12</option>
+                      <option>Cuarentena · Zona Q1</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-header"><strong data-zone="STS">Estados</strong><span class="badge badge-neutral">ui/Badge</span></div>
+                <div class="panel-body component-row">
+                  <span class="badge badge-success">En stock</span>
+                  <span class="badge badge-warn">Stock bajo</span>
+                  <span class="badge badge-danger">Agotado</span>
+                  <span class="badge badge-info">En tránsito</span>
+                  <span class="badge badge-neutral">Inactivo</span>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-header">
+                  <strong data-zone="TBL">Tabla con scroll interno</strong>
+                  <span class="badge badge-neutral">patterns/TableShell</span>
+                </div>
+                <div class="table-wrap">
+                  <div class="table-scroll">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>SKU</th>
+                          <th>Producto</th>
+                          <th>Ubicación</th>
+                          <th>Cantidad</th>
+                          <th>Estado</th>
+                        </tr>
+                      </thead>
+                      <tbody id="tableBody"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-header"><strong>Modal (estructura)</strong><span class="badge badge-neutral">ui/Modal</span></div>
+                <div class="panel-body">
+                  <button class="btn btn-secondary" id="openModal">Abrir modal de ejemplo</button>
+                </div>
+              </div>
+
+              <div>
+                <h2>Lista priorizada</h2>
+                <div class="panel"><div class="panel-body">
+                  <ul class="priority-list">
+                    <li><span class="priority-tag p0">P0</span><div><strong>AppShell, Sidebar, PageHeader</strong><br><span style="color:var(--muted);font-size:12px">Layout base con nav y área de contenido con scroll controlado</span></div></li>
+                    <li><span class="priority-tag p0">P0</span><div><strong>Button, Input, Label, Select</strong><br><span style="color:var(--muted);font-size:12px">Controles de formulario con estados focus/disabled/error</span></div></li>
+                    <li><span class="priority-tag p0">P0</span><div><strong>Badge, TableShell, ScrollArea</strong><br><span style="color:var(--muted);font-size:12px">Tabla densa con header sticky y scroll interno</span></div></li>
+                    <li><span class="priority-tag p1">P1</span><div><strong>Modal, Drawer, Tabs, FilterBar</strong><br><span style="color:var(--muted);font-size:12px">Patrones de interacción para listados y detalle</span></div></li>
+                    <li><span class="priority-tag p1">P1</span><div><strong>Pagination, EmptyState, Skeleton</strong><br><span style="color:var(--muted);font-size:12px">Estados de carga y vacío en listados largos</span></div></li>
+                    <li><span class="priority-tag p2">P2</span><div><strong>Toast, Tooltip, DropdownMenu</strong><br><span style="color:var(--muted);font-size:12px">Feedback y menús contextuales</span></div></li>
+                  </ul>
+                </div></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ARQUITECTURA -->
+          <section class="section" id="sec-arquitectura">
+            <div class="page-eyebrow">ARCH · Estructura</div>
+            <h1>Arquitectura de carpetas</h1>
+            <p class="lead">Estructura escalable para React + TypeScript. Separación clara entre átomos, layout y patrones compuestos.</p>
+
+            <div class="stack stack-lg mt-6">
+              <div class="code">src/
+├── app/                    <span class="cm"># Rutas y layouts (Next.js / React Router)</span>
+│   ├── layout.tsx
+│   └── providers.tsx
+├── components/
+│   ├── ui/                 <span class="cm"># Átomos: Button, Input, Badge, Modal…</span>
+│   ├── layout/             <span class="cm"># AppShell, Sidebar, Topbar, PageHeader</span>
+│   └── patterns/           <span class="cm"># TableShell, FilterBar, StatCard, FormSection</span>
+├── config/
+│   └── theme/
+│       ├── tokens.ts       <span class="cm"># Tokens tipados (const assertions)</span>
+│       └── tailwind.preset.ts
+├── hooks/                  <span class="cm"># useMediaQuery, useScrollLock…</span>
+├── lib/
+│   └── cn.ts               <span class="cm"># clsx + tailwind-merge</span>
+├── styles/
+│   └── globals.css         <span class="cm"># @tailwind + CSS vars</span>
+├── types/                  <span class="cm"># Tipos compartidos UI</span>
+└── utils/
+
+<span class="cm"># Convención de nombres</span>
+<span class="cm"># · Componentes: PascalCase → Button.tsx exporta Button</span>
+<span class="cm"># · Hooks: camelCase con prefijo use → useBreakpoint.ts</span>
+<span class="cm"># · Utilidades: camelCase → formatSku.ts</span>
+<span class="cm"># · Tipos: PascalCase + sufijo Props/Config → ButtonProps</span></div>
+
+              <div class="grid-2">
+                <div class="panel">
+                  <div class="panel-header"><strong>Patrón AppShell</strong></div>
+                  <div class="panel-body" style="font-size:13px;color:var(--muted);line-height:1.7">
+                    <code class="mono" style="background:oklch(96% 0.005 250);padding:2px 6px;border-radius:4px">AppShell</code> envuelve toda la app:<br><br>
+                    · Sidebar fija (240px desktop)<br>
+                    · Topbar 56px sticky<br>
+                    · <code class="mono" style="background:oklch(96% 0.005 250);padding:2px 6px;border-radius:4px">main</code> con <code class="mono" style="background:oklch(96% 0.005 250);padding:2px 6px;border-radius:4px">flex-1 min-h-0 overflow-auto</code><br>
+                    · Contenido sin <code class="mono" style="background:oklch(96% 0.005 250);padding:2px 6px;border-radius:4px">max-width</code> restrictivo en desktop<br>
+                    · Body nunca hace scroll
+                  </div>
+                </div>
+                <div class="panel">
+                  <div class="panel-header"><strong>Patrón TableShell</strong></div>
+                  <div class="panel-body" style="font-size:13px;color:var(--muted);line-height:1.7">
+                    Contenedor con altura fija o <code class="mono" style="background:oklch(96% 0.005 250);padding:2px 6px;border-radius:4px">max-h</code>:<br><br>
+                    · Header de tabla <code class="mono" style="background:oklch(96% 0.005 250);padding:2px 6px;border-radius:4px">sticky top-0</code><br>
+                    · Body en <code class="mono" style="background:oklch(96% 0.005 250);padding:2px 6px;border-radius:4px">overflow-y-auto</code><br>
+                    · Toolbar de filtros fuera del scroll
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- RESPONSIVE -->
+          <section class="section" id="sec-responsive">
+            <div class="page-eyebrow">OPS · Layout</div>
+            <h1>Responsive y scroll interno</h1>
+            <p class="lead">Desktop como superficie principal. Tablet y móvil reutilizan los mismos componentes con adaptaciones de layout.</p>
+
+            <div class="stack stack-lg mt-6">
+              <div class="grid-3">
+                <div class="callout">
+                  <strong>Desktop ≥ 1280px</strong>
+                  Contenido a ancho completo con gutters amplios. Sidebar 256px. Tablas y splits ocupan todo el espacio horizontal; scroll solo en paneles internos.
+                </div>
+                <div class="callout">
+                  <strong>Tablet 768–1279px</strong>
+                  Sidebar colapsable a iconos. Grids en 2 columnas. Filtros en fila compacta. Tablas mantienen scroll interno.
+                </div>
+                <div class="callout">
+                  <strong>Móvil &lt; 768px</strong>
+                  Sidebar en drawer. Stats y grids apilados. Tablas con scroll horizontal + vertical en contenedor.
+                </div>
+              </div>
+
+              <div>
+                <h2>Demo: split con scroll independiente</h2>
+                <div class="split-demo">
+                  <div class="split-main panel">
+                    <div class="panel-header"><strong data-zone="LST">Listado de movimientos</strong><span class="badge badge-neutral">scroll interno</span></div>
+                    <div class="panel-scroll panel-body" style="padding:0">
+                      <table>
+                        <thead><tr><th>ID</th><th>Tipo</th><th>Producto</th><th>Qty</th></tr></thead>
+                        <tbody id="moveBody"></tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="split-side panel">
+                    <div class="panel-header"><strong data-zone="DTL">Detalle</strong></div>
+                    <div class="panel-scroll panel-body" style="font-size:13px;color:var(--muted);line-height:1.8">
+                      <p><strong style="color:var(--fg)">MOV-0047</strong></p>
+                      <p>Entrada · SKU-004821</p>
+                      <p>Cantidad: <span class="mono">+120 uds</span></p>
+                      <p>Ubicación destino: Pasillo A-03</p>
+                      <p>Operador: —</p>
+                      <p style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">El panel lateral también usa scroll interno cuando el contenido excede la altura del split.</p>
+                      <p>Historial de cambios de ubicación pendiente de integración en Fase 2.</p>
+                      <p>Registro de auditoría pendiente de integración en Fase 2.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h2>Reglas CSS obligatorias</h2>
+                <div class="code"><span class="cm">/* Shell — nunca scroll en body */</span>
+html, body { height: 100%; overflow: hidden; }
+
+<span class="cm">/* Área principal — operativo, sin tope estrecho */</span>
+.page-content {
+  width: 100%;
+  max-width: none;        <span class="cm">/* no centrar como landing */</span>
+  padding-inline: theme('spacing.6');
+}
+@media (min-width: 1280px) {
+  .page-content { padding-inline: theme('spacing.8'); }
+}
+
+<span class="cm">/* Solo texto introductorio limita ancho */</span>
+.lead { max-width: 68ch; }
+
+<span class="cm">/* Tabla / panel con scroll */</span>
+.table-shell {
+  display: flex;
+  flex-direction: column;
+  max-height: var(--table-max-h, 480px);
+  overflow: hidden;
+}
+.table-shell &gt; .scroll-area {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+.table-shell thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}</div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal demo -->
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <strong id="modalTitle">Confirmar movimiento</strong>
+        <p style="font-size:13px;color:var(--muted);margin-top:4px">Estructura de modal — sin lógica de negocio en Fase 1.</p>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label class="label">Observaciones</label>
+          <textarea class="textarea" placeholder="Notas opcionales del operador…"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="closeModal">Cancelar</button>
+        <button class="btn btn-primary" id="closeModal2">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var sections = {
+        resumen: { title: 'Resumen · Fase 1', el: document.getElementById('sec-resumen') },
+        tokens: { title: 'Tokens globales', el: document.getElementById('sec-tokens') },
+        componentes: { title: 'Componentes base', el: document.getElementById('sec-componentes') },
+        arquitectura: { title: 'Arquitectura', el: document.getElementById('sec-arquitectura') },
+        responsive: { title: 'Responsive y scroll', el: document.getElementById('sec-responsive') }
+      };
+
+      var navItems = document.querySelectorAll('.nav-item');
+      var topbarTitle = document.getElementById('topbarTitle');
+      var sidebar = document.getElementById('sidebar');
+      var sidebarToggle = document.getElementById('sidebarToggle');
+      var bpIndicator = document.getElementById('bpIndicator');
+
+      function showSection(id) {
+        Object.keys(sections).forEach(function (key) {
+          sections[key].el.classList.toggle('active', key === id);
+        });
+        navItems.forEach(function (btn) {
+          btn.classList.toggle('active', btn.getAttribute('data-section') === id);
+        });
+        topbarTitle.textContent = sections[id].title;
+        sidebar.classList.remove('open');
+      }
+
+      navItems.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          showSection(btn.getAttribute('data-section'));
+        });
+      });
+
+      sidebarToggle.addEventListener('click', function () {
+        sidebar.classList.toggle('open');
+      });
+
+      // Populate demo table
+      var products = [
+        ['SKU-004821', 'Tornillo hex M8×25', 'A-03-02', '1.240', 'success', 'En stock'],
+        ['SKU-004822', 'Arandela plana M8', 'A-03-03', '890', 'success', 'En stock'],
+        ['SKU-004830', 'Tuerca autobloc. M8', 'A-04-01', '45', 'warn', 'Stock bajo'],
+        ['SKU-005101', 'Bisagra industrial 80mm', 'B-12-01', '0', 'danger', 'Agotado'],
+        ['SKU-005102', 'Cerradura embutir', 'B-12-02', '320', 'success', 'En stock'],
+        ['SKU-005110', 'Manilla acero inox', 'B-12-04', '78', 'warn', 'Stock bajo'],
+        ['SKU-006001', 'Cable UTP Cat6 305m', 'C-01-01', '12', 'info', 'En tránsito'],
+        ['SKU-006002', 'Canaleta 40×25mm', 'C-01-02', '560', 'success', 'En stock'],
+        ['SKU-006010', 'Caja derivación IP55', 'C-02-01', '200', 'success', 'En stock'],
+        ['SKU-006011', 'Toma schuko empotrable', 'C-02-02', '0', 'danger', 'Agotado'],
+        ['SKU-007001', 'Pintura epoxi gris 4L', 'D-05-01', '34', 'warn', 'Stock bajo'],
+        ['SKU-007002', 'Thinner industrial 1L', 'D-05-02', '156', 'success', 'En stock']
+      ];
+      var tbody = document.getElementById('tableBody');
+      products.forEach(function (row) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td class="mono">' + row[0] + '</td><td>' + row[1] + '</td><td class="mono">' + row[2] + '</td><td class="mono">' + row[3] + '</td><td><span class="badge badge-' + row[4] + '">' + row[5] + '</span></td>';
+        tbody.appendChild(tr);
+      });
+
+      var moves = [
+        ['MOV-0041', 'Entrada', 'SKU-004821', '+120'],
+        ['MOV-0042', 'Salida', 'SKU-004830', '−30'],
+        ['MOV-0043', 'Transferencia', 'SKU-005101', '±15'],
+        ['MOV-0044', 'Entrada', 'SKU-006001', '+48'],
+        ['MOV-0045', 'Ajuste', 'SKU-005110', '−2'],
+        ['MOV-0046', 'Salida', 'SKU-006002', '−80'],
+        ['MOV-0047', 'Entrada', 'SKU-007001', '+24'],
+        ['MOV-0048', 'Transferencia', 'SKU-004822', '±50']
+      ];
+      var moveBody = document.getElementById('moveBody');
+      moves.forEach(function (row) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td class="mono">' + row[0] + '</td><td>' + row[1] + '</td><td class="mono">' + row[2] + '</td><td class="mono">' + row[3] + '</td>';
+        moveBody.appendChild(tr);
+      });
+
+      // Modal
+      var backdrop = document.getElementById('modalBackdrop');
+      document.getElementById('openModal').addEventListener('click', function () { backdrop.classList.add('open'); });
+      document.getElementById('closeModal').addEventListener('click', function () { backdrop.classList.remove('open'); });
+      document.getElementById('closeModal2').addEventListener('click', function () { backdrop.classList.remove('open'); });
+      backdrop.addEventListener('click', function (e) { if (e.target === backdrop) backdrop.classList.remove('open'); });
+
+      // Breakpoint indicator
+      function updateBp() {
+        var w = window.innerWidth;
+        var label = w >= 1280 ? 'xl · desktop' : w >= 768 ? 'md · tablet' : 'sm · móvil';
+        bpIndicator.textContent = w + 'px · ' + label;
+      }
+      window.addEventListener('resize', updateBp);
+      updateBp();
+
+      // Viewport simulation (visual hint only)
+      document.querySelectorAll('.viewport-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('.viewport-btn').forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,853 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BodegaX · Sistema de inventario</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/bodega-system.css" />
+</head>
+<body>
+  <div class="app" id="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-mark">BX</div>
+        <div>
+          <div class="sidebar-brand-text">BodegaX</div>
+          <div class="sidebar-brand-sub">WMS · Operativo</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav" aria-label="Navegación principal">
+        <div class="nav-group-label">Principal</div>
+        <a class="nav-item active" href="#dashboard" data-screen="dashboard">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          Dashboard
+        </a>
+        <a class="nav-item" href="#movimientos" data-screen="movimientos">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+          Movimientos
+        </a>
+        <a class="nav-item" href="#productos" data-screen="productos">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+          Productos
+        </a>
+        <div class="nav-group-label">Documentos</div>
+        <a class="nav-item" href="#recepcion" data-screen="recepcion">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          Recepción
+        </a>
+        <a class="nav-item" href="#despacho" data-screen="despacho">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M19 12l-4-4M19 12l-4 4"/></svg>
+          Despacho
+        </a>
+        <a class="nav-item" href="#traslado" data-screen="traslado">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4M7 4L3 8M7 4l4 4M17 8v12M17 20l4-4M17 20l-4-4"/></svg>
+          Traslado
+        </a>
+        <a class="nav-item" href="#ajuste" data-screen="ajuste">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>
+          Ajuste
+        </a>
+      </nav>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button class="sidebar-toggle" id="sidebarToggle" aria-label="Abrir menú">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          </button>
+          <div>
+            <div class="topbar-title" id="topbarTitle">Dashboard</div>
+            <div class="topbar-meta" id="topbarMeta">Centro de mando · inventario</div>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <div class="topbar-status"><span class="topbar-status-dot"></span>Operativo</div>
+        </div>
+      </header>
+
+      <div class="content">
+        <div class="content-inner">
+
+          <!-- DASHBOARD -->
+          <div class="screen active" id="screen-dashboard">
+            <div class="page-header">
+              <div class="page-header-main">
+                <div class="page-eyebrow">WMS · Dashboard</div>
+                <h1>Centro de mando</h1>
+                <p class="lead">Resumen operativo de stock, alertas y actividad reciente. Bodega principal · turno mañana.</p>
+              </div>
+              <div class="page-header-actions">
+                <button class="btn btn-secondary btn-sm" data-goto="movimientos">Ver movimientos</button>
+                <button class="btn btn-primary btn-sm" data-goto="recepcion">Nueva recepción</button>
+              </div>
+            </div>
+
+            <div class="grid-stats">
+              <div class="stat stat--hero">
+                <div class="stat-kicker">Stock total</div>
+                <div class="stat-value">24.680</div>
+                <div class="stat-label">Unidades en bodega principal</div>
+              </div>
+              <div class="stat stat--accent">
+                <div class="stat-kicker">SKUs activos</div>
+                <div class="stat-value">1.247</div>
+                <div class="stat-label">842 con movimiento este mes</div>
+              </div>
+              <div class="stat stat--inset">
+                <div class="stat-kicker">Pendientes</div>
+                <div class="stat-value">18</div>
+                <div class="stat-label">Documentos por confirmar</div>
+              </div>
+              <div class="stat stat--dark">
+                <div class="stat-kicker">Alertas</div>
+                <div class="stat-value">7</div>
+                <div class="stat-label">Stock bajo o agotado</div>
+              </div>
+            </div>
+
+            <div class="dashboard-layout mt-6">
+              <div class="dashboard-main">
+                <div class="panel">
+                  <div class="panel-header">
+                    <strong data-zone="ACT">Actividad reciente</strong>
+                    <button class="btn btn-ghost btn-sm" data-goto="movimientos">Ver todo</button>
+                  </div>
+                  <div class="table-wrap table-wrap--flush table-wrap--dashboard">
+                    <div class="table-scroll">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Documento</th>
+                            <th>Tipo</th>
+                            <th>SKU</th>
+                            <th>Cantidad</th>
+                            <th>Estado</th>
+                            <th>Hora</th>
+                          </tr>
+                        </thead>
+                        <tbody data-region="dashboard-activity" data-colspan="6" data-loading-label="Cargando actividad…"></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dashboard-side">
+                <div class="panel panel-accent">
+                  <div class="panel-header"><strong data-zone="ALT">Alertas de stock</strong></div>
+                  <div class="panel-body panel-scroll--fill">
+                    <div class="alert-list" data-region="dashboard-alerts"></div>
+                  </div>
+                </div>
+
+                <div class="panel">
+                  <div class="panel-header"><strong data-zone="DOC">Documentos pendientes</strong></div>
+                  <div class="panel-body panel-scroll--fill" style="padding:0">
+                    <table>
+                      <tbody data-region="dashboard-pending" data-colspan="3" data-loading-label="Cargando documentos…"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MOVIMIENTOS -->
+          <div class="screen" id="screen-movimientos">
+            <div class="page-header">
+              <div class="page-header-main">
+                <nav class="breadcrumbs" aria-label="Migas de pan">
+                  <a class="breadcrumb-item" href="#dashboard" data-goto="dashboard">Inicio</a>
+                  <span class="breadcrumb-sep">/</span>
+                  <span class="breadcrumb-item active">Movimientos</span>
+                </nav>
+                <div class="page-eyebrow">INV · Movimientos</div>
+                <h1>Historial de movimientos</h1>
+              </div>
+              <div class="page-header-actions">
+                <div class="action-menu" id="actionMenuMov">
+                  <button class="btn btn-secondary btn-sm" data-action-menu>Exportar ▾</button>
+                  <div class="action-menu-dropdown">
+                    <button class="action-menu-item">Exportar CSV</button>
+                    <button class="action-menu-item">Exportar PDF</button>
+                  </div>
+                </div>
+                <button class="btn btn-primary btn-sm" data-goto="recepcion">Nuevo documento</button>
+              </div>
+            </div>
+
+            <div class="filter-bar">
+              <div class="field">
+                <label class="label">Buscar</label>
+                <div class="input-group">
+                  <span class="input-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></span>
+                  <input class="input" type="search" placeholder="Documento, SKU, operador…" data-filter="q" aria-label="Buscar movimientos" />
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Tipo</label>
+                <select class="select" data-filter="type" aria-label="Filtrar por tipo">
+                  <option>Todos</option>
+                  <option>Entrada</option>
+                  <option>Salida</option>
+                  <option>Transferencia</option>
+                  <option>Ajuste</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="label">Desde</label>
+                <input class="input" type="date" value="2026-06-01" data-filter="from" aria-label="Fecha desde" />
+              </div>
+              <div class="field">
+                <label class="label">Hasta</label>
+                <input class="input" type="date" value="2026-06-28" data-filter="to" aria-label="Fecha hasta" />
+              </div>
+              <button type="button" class="btn btn-secondary" data-filter-submit>Filtrar</button>
+            </div>
+
+            <div class="table-wrap table-wrap--tall mt-4">
+              <div class="table-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Movimiento</th>
+                      <th>Tipo</th>
+                      <th>Documento</th>
+                      <th>SKU</th>
+                      <th>Producto</th>
+                      <th>Cantidad</th>
+                      <th>Ubicación</th>
+                      <th>Estado</th>
+                      <th>Fecha</th>
+                    </tr>
+                  </thead>
+                  <tbody data-region="movimientos-table" data-colspan="9" data-loading-label="Cargando movimientos…">
+                  </tbody>
+                </table>
+              </div>
+              <div class="pagination">
+                <span class="pagination-info" data-region="movimientos-pagination">1–7 de 248 movimientos</span>
+                <div class="pagination-btns">
+                  <button class="page-btn" disabled>‹</button>
+                  <button class="page-btn active">1</button>
+                  <button class="page-btn">2</button>
+                  <button class="page-btn">3</button>
+                  <button class="page-btn">›</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DETALLE MOVIMIENTO -->
+          <div class="screen" id="screen-movimiento-detalle">
+            <div class="page-header">
+              <div class="page-header-main">
+                <nav class="breadcrumbs" aria-label="Migas de pan">
+                  <a class="breadcrumb-item" href="#dashboard" data-goto="dashboard">Inicio</a>
+                  <span class="breadcrumb-sep">/</span>
+                  <a class="breadcrumb-item" href="#movimientos" data-goto="movimientos">Movimientos</a>
+                  <span class="breadcrumb-sep">/</span>
+                  <span class="breadcrumb-item active">MOV-0047</span>
+                </nav>
+                <div class="page-eyebrow">DET · Movimiento</div>
+                <h1>MOV-0047</h1>
+                <p class="lead">Entrada por recepción · REC-0089 · Confirmado el 28/06/2026 a las 09:42</p>
+              </div>
+              <div class="page-header-actions">
+                <button class="btn btn-secondary btn-sm" data-goto="movimientos">← Volver</button>
+                <button class="btn btn-ghost btn-sm" data-confirm-open>Anular</button>
+                <button class="btn btn-primary btn-sm" data-goto="recepcion">Ver documento</button>
+              </div>
+            </div>
+
+            <div class="detail-grid">
+              <div class="stack">
+                <div class="panel">
+                  <div class="panel-header"><strong data-zone="DET">Detalle del movimiento</strong><span class="badge badge-success">Confirmado</span></div>
+                  <div class="panel-body">
+                    <div class="grid-2">
+                      <div class="form-field">
+                        <span class="form-label">Tipo</span>
+                        <span>Entrada (recepción)</span>
+                      </div>
+                      <div class="form-field">
+                        <span class="form-label">Documento origen</span>
+                        <span class="mono">REC-0089</span>
+                      </div>
+                      <div class="form-field">
+                        <span class="form-label">SKU</span>
+                        <span class="mono">SKU-004821</span>
+                      </div>
+                      <div class="form-field">
+                        <span class="form-label">Producto</span>
+                        <span>Tornillo hex M8×25</span>
+                      </div>
+                      <div class="form-field">
+                        <span class="form-label">Cantidad</span>
+                        <span class="mono" style="color:var(--accent);font-weight:600">+120 uds</span>
+                      </div>
+                      <div class="form-field">
+                        <span class="form-label">Ubicación destino</span>
+                        <span class="mono">A-03-02</span>
+                      </div>
+                      <div class="form-field">
+                        <span class="form-label">Operador</span>
+                        <span>María González</span>
+                      </div>
+                      <div class="form-field">
+                        <span class="form-label">Bodega</span>
+                        <span>Bodega principal</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="panel">
+                  <div class="panel-header"><strong data-zone="LIN">Líneas relacionadas</strong></div>
+                  <div class="table-wrap" style="border:none;border-radius:0;box-shadow:none;max-height:240px">
+                    <div class="table-scroll">
+                      <table>
+                        <thead>
+                          <tr><th>Línea</th><th>SKU</th><th>Cantidad</th><th>Lote</th></tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td class="mono">001</td>
+                            <td class="mono">SKU-004821</td>
+                            <td class="mono">+120</td>
+                            <td class="mono">LT-2026-0612</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-header"><strong data-zone="HIS">Historial</strong></div>
+                <div class="panel-body panel-scroll--fill">
+                  <ul class="timeline">
+                    <li>
+                      <span class="timeline-dot"></span>
+                      <span class="timeline-time">09:42</span>
+                      <div><strong>Confirmado</strong><br><span style="color:var(--muted);font-size:12px">María González · stock actualizado</span></div>
+                    </li>
+                    <li>
+                      <span class="timeline-dot" style="background:var(--warn)"></span>
+                      <span class="timeline-time">09:38</span>
+                      <div><strong>En revisión</strong><br><span style="color:var(--muted);font-size:12px">Control de calidad aprobado</span></div>
+                    </li>
+                    <li>
+                      <span class="timeline-dot" style="background:var(--steel-mid)"></span>
+                      <span class="timeline-time">09:15</span>
+                      <div><strong>Registrado</strong><br><span style="color:var(--muted);font-size:12px">Recepción física completada</span></div>
+                    </li>
+                    <li>
+                      <span class="timeline-dot" style="background:var(--steel-mid)"></span>
+                      <span class="timeline-time">08:50</span>
+                      <div><strong>Documento creado</strong><br><span style="color:var(--muted);font-size:12px">REC-0089 · borrador</span></div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RECEPCIÓN -->
+          <div class="screen" id="screen-recepcion">
+            <div class="page-header">
+              <div class="page-header-main">
+                <nav class="breadcrumbs" aria-label="Migas de pan">
+                  <a class="breadcrumb-item" href="#dashboard" data-goto="dashboard">Inicio</a>
+                  <span class="breadcrumb-sep">/</span>
+                  <span class="breadcrumb-item active">Recepción</span>
+                </nav>
+                <div class="page-eyebrow">DOC · Recepción</div>
+                <h1>REC-0089</h1>
+              </div>
+              <div class="page-header-actions">
+                <span class="badge badge-warn">Borrador</span>
+                <button class="btn btn-ghost btn-sm" data-confirm-open>Anular</button>
+                <button class="btn btn-secondary btn-sm">Guardar</button>
+                <button class="btn btn-primary btn-sm" data-action-loading data-toast="Recepción confirmada · stock actualizado">Confirmar recepción</button>
+              </div>
+            </div>
+
+            <div class="doc-layout">
+              <div class="form-section">
+                <div class="form-section-header">
+                  <span class="form-section-title" data-zone="HDR">Cabecera del documento</span>
+                </div>
+                <div class="form-section-body">
+                  <div class="doc-header-grid">
+                    <div class="form-field">
+                      <label class="form-label form-label-required">Proveedor</label>
+                      <select class="select"><option>Ferretería Industrial Norte S.A.</option></select>
+                    </div>
+                    <div class="form-field">
+                      <label class="form-label form-label-required">Nº orden compra</label>
+                      <input class="input mono" type="text" value="OC-2026-1847" />
+                    </div>
+                    <div class="form-field">
+                      <label class="form-label form-label-required">Fecha recepción</label>
+                      <input class="input" type="date" value="2026-06-28" />
+                    </div>
+                    <div class="form-field">
+                      <label class="form-label">Bodega destino</label>
+                      <select class="select"><option>Bodega principal</option><option>Bodega secundaria</option></select>
+                    </div>
+                  </div>
+                  <div class="form-field">
+                    <label class="form-label">Observaciones</label>
+                    <textarea class="textarea" placeholder="Notas del operador, referencia de guía…"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-header">
+                  <strong data-zone="LIN">Líneas de recepción</strong>
+                  <button class="btn btn-secondary btn-sm">+ Agregar línea</button>
+                </div>
+                <div class="table-wrap table-wrap--doc" style="border:none;border-radius:0;box-shadow:none">
+                  <div class="table-scroll">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>SKU</th>
+                          <th>Producto</th>
+                          <th>Cant. esperada</th>
+                          <th>Cant. recibida</th>
+                          <th>Ubicación</th>
+                          <th>Lote</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td class="mono">001</td>
+                          <td class="mono">SKU-004821</td>
+                          <td>Tornillo hex M8×25</td>
+                          <td class="mono">120</td>
+                          <td><div class="qty-control"><button class="qty-btn" data-qty="−">−</button><input class="input" type="number" value="120" /><button class="qty-btn" data-qty="+">+</button></div></td>
+                          <td><select class="select" style="min-width:100px"><option>A-03-02</option></select></td>
+                          <td><input class="input mono" type="text" value="LT-2026-0612" style="width:110px" /></td>
+                          <td><button class="btn btn-ghost btn-sm">✕</button></td>
+                        </tr>
+                        <tr>
+                          <td class="mono">002</td>
+                          <td class="mono">SKU-004822</td>
+                          <td>Arandela plana M8</td>
+                          <td class="mono">200</td>
+                          <td><div class="qty-control"><button class="qty-btn" data-qty="−">−</button><input class="input" type="number" value="200" /><button class="qty-btn" data-qty="+">+</button></div></td>
+                          <td><select class="select" style="min-width:100px"><option>A-03-03</option></select></td>
+                          <td><input class="input mono" type="text" value="LT-2026-0612" style="width:110px" /></td>
+                          <td><button class="btn btn-ghost btn-sm">✕</button></td>
+                        </tr>
+                        <tr>
+                          <td class="mono">003</td>
+                          <td class="mono">SKU-004830</td>
+                          <td>Tuerca autobloc. M8</td>
+                          <td class="mono">100</td>
+                          <td><div class="qty-control"><button class="qty-btn" data-qty="−">−</button><input class="input" type="number" value="100" /><button class="qty-btn" data-qty="+">+</button></div></td>
+                          <td><select class="select" style="min-width:100px"><option>A-04-01</option></select></td>
+                          <td><input class="input mono" type="text" placeholder="—" style="width:110px" /></td>
+                          <td><button class="btn btn-ghost btn-sm">✕</button></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="doc-meta-row">
+                  <span class="doc-meta-item">Líneas: <strong>3</strong></span>
+                  <span class="doc-meta-item">Total unidades: <strong class="mono">420</strong></span>
+                  <span class="doc-meta-item">Operador: <strong>María González</strong></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DESPACHO -->
+          <div class="screen" id="screen-despacho">
+            <div class="page-header">
+              <div class="page-header-main">
+                <nav class="breadcrumbs" aria-label="Migas de pan">
+                  <a class="breadcrumb-item" href="#dashboard" data-goto="dashboard">Inicio</a>
+                  <span class="breadcrumb-sep">/</span>
+                  <span class="breadcrumb-item active">Despacho</span>
+                </nav>
+                <div class="page-eyebrow">DOC · Despacho</div>
+                <h1>DES-0034</h1>
+              </div>
+              <div class="page-header-actions">
+                <span class="badge badge-info">En proceso</span>
+                <button class="btn btn-ghost btn-sm" data-confirm-open>Anular</button>
+                <button class="btn btn-secondary btn-sm">Guardar</button>
+                <button class="btn btn-primary btn-sm" data-action-loading data-toast="Despacho registrado correctamente">Confirmar despacho</button>
+              </div>
+            </div>
+
+            <div class="doc-layout">
+              <div class="form-section">
+                <div class="form-section-header">
+                  <span class="form-section-title" data-zone="HDR">Cabecera del documento</span>
+                </div>
+                <div class="form-section-body">
+                  <div class="doc-header-grid">
+                    <div class="form-field">
+                      <label class="form-label form-label-required">Cliente / destino</label>
+                      <input class="input" type="text" value="Obra Residencial Los Álamos" />
+                    </div>
+                    <div class="form-field">
+                      <label class="form-label form-label-required">Nº pedido</label>
+                      <input class="input mono" type="text" value="PED-2026-0923" />
+                    </div>
+                    <div class="form-field">
+                      <label class="form-label form-label-required">Fecha despacho</label>
+                      <input class="input" type="date" value="2026-06-28" />
+                    </div>
+                    <div class="form-field">
+                      <label class="form-label">Transportista</label>
+                      <select class="select"><option>Logística Express</option><option>Retiro en bodega</option></select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-header">
+                  <strong data-zone="LIN">Líneas de despacho</strong>
+                  <button class="btn btn-secondary btn-sm">+ Agregar línea</button>
+                </div>
+                <div class="table-wrap table-wrap--doc" style="border:none;border-radius:0;box-shadow:none">
+                  <div class="table-scroll">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>SKU</th>
+                          <th>Producto</th>
+                          <th>Stock disp.</th>
+                          <th>Cant. despachar</th>
+                          <th>Ubicación</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td class="mono">001</td>
+                          <td class="mono">SKU-006002</td>
+                          <td>Canaleta 40×25mm</td>
+                          <td class="mono">560</td>
+                          <td><div class="qty-control"><button class="qty-btn" data-qty="−">−</button><input class="input" type="number" value="80" /><button class="qty-btn" data-qty="+">+</button></div></td>
+                          <td class="mono">C-01-02</td>
+                          <td><button class="btn btn-ghost btn-sm">✕</button></td>
+                        </tr>
+                        <tr>
+                          <td class="mono">002</td>
+                          <td class="mono">SKU-006010</td>
+                          <td>Caja derivación IP55</td>
+                          <td class="mono">200</td>
+                          <td><div class="qty-control"><button class="qty-btn" data-qty="−">−</button><input class="input" type="number" value="24" /><button class="qty-btn" data-qty="+">+</button></div></td>
+                          <td class="mono">C-02-01</td>
+                          <td><button class="btn btn-ghost btn-sm">✕</button></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="doc-meta-row">
+                  <span class="doc-meta-item">Líneas: <strong>2</strong></span>
+                  <span class="doc-meta-item">Total unidades: <strong class="mono">104</strong></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TRASLADO -->
+          <div class="screen" id="screen-traslado">
+            <div class="page-header">
+              <div class="page-header-main">
+                <nav class="breadcrumbs" aria-label="Migas de pan">
+                  <a class="breadcrumb-item" href="#dashboard" data-goto="dashboard">Inicio</a>
+                  <span class="breadcrumb-sep">/</span>
+                  <span class="breadcrumb-item active">Traslado</span>
+                </nav>
+                <div class="page-eyebrow">DOC · Traslado</div>
+                <h1>TRA-0012</h1>
+              </div>
+              <div class="page-header-actions">
+                <span class="badge badge-warn">Pendiente</span>
+                <button class="btn btn-ghost btn-sm" data-confirm-open>Anular</button>
+                <button class="btn btn-secondary btn-sm">Guardar</button>
+                <button class="btn btn-primary btn-sm" data-action-loading data-toast="Traslado confirmado">Confirmar traslado</button>
+              </div>
+            </div>
+
+            <div class="doc-layout">
+              <div class="form-section">
+                <div class="form-section-header">
+                  <span class="form-section-title" data-zone="HDR">Cabecera del documento</span>
+                </div>
+                <div class="form-section-body">
+                  <div class="doc-header-grid">
+                    <div class="form-field">
+                      <label class="form-label form-label-required">Origen</label>
+                      <select class="select"><option>B-12-01 · Pasillo B</option></select>
+                    </div>
+                    <div class="form-field">
+                      <label class="form-label form-label-required">Destino</label>
+                      <select class="select"><option>B-14-02 · Pasillo B</option></select>
+                    </div>
+                    <div class="form-field">
+                      <label class="form-label form-label-required">Fecha</label>
+                      <input class="input" type="date" value="2026-06-28" />
+                    </div>
+                    <div class="form-field">
+                      <label class="form-label">Motivo</label>
+                      <select class="select"><option>Reubicación por espacio</option><option>Consolidación</option></select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-header">
+                  <strong data-zone="LIN">Líneas de traslado</strong>
+                  <button class="btn btn-secondary btn-sm">+ Agregar línea</button>
+                </div>
+                <div class="table-wrap table-wrap--doc" style="border:none;border-radius:0;box-shadow:none">
+                  <div class="table-scroll">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>SKU</th>
+                          <th>Producto</th>
+                          <th>Origen</th>
+                          <th>Destino</th>
+                          <th>Cantidad</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td class="mono">001</td>
+                          <td class="mono">SKU-005101</td>
+                          <td>Bisagra industrial 80mm</td>
+                          <td class="mono">B-12-01</td>
+                          <td class="mono">B-14-02</td>
+                          <td><div class="qty-control"><button class="qty-btn" data-qty="−">−</button><input class="input" type="number" value="15" /><button class="qty-btn" data-qty="+">+</button></div></td>
+                          <td><button class="btn btn-ghost btn-sm">✕</button></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AJUSTE -->
+          <div class="screen" id="screen-ajuste">
+            <div class="page-header">
+              <div class="page-header-main">
+                <nav class="breadcrumbs" aria-label="Migas de pan">
+                  <a class="breadcrumb-item" href="#dashboard" data-goto="dashboard">Inicio</a>
+                  <span class="breadcrumb-sep">/</span>
+                  <span class="breadcrumb-item active">Ajuste</span>
+                </nav>
+                <div class="page-eyebrow">DOC · Ajuste</div>
+                <h1>AJU-0005</h1>
+              </div>
+              <div class="page-header-actions">
+                <span class="badge badge-neutral">Revisión</span>
+                <button class="btn btn-ghost btn-sm" data-confirm-open>Anular</button>
+                <button class="btn btn-secondary btn-sm">Guardar</button>
+                <button class="btn btn-primary btn-sm" data-action-loading data-toast="Ajuste enviado a aprobación">Enviar a aprobación</button>
+              </div>
+            </div>
+
+            <div class="alert alert-warn mt-4" style="margin-bottom:var(--space-4)">
+              <div>
+                <div class="alert-title">Ajuste requiere aprobación</div>
+                Los ajustes negativos superiores a 5 unidades requieren autorización de supervisor.
+              </div>
+            </div>
+
+            <div class="doc-layout">
+              <div class="form-section">
+                <div class="form-section-header">
+                  <span class="form-section-title" data-zone="HDR">Cabecera del documento</span>
+                </div>
+                <div class="form-section-body">
+                  <div class="doc-header-grid">
+                    <div class="form-field">
+                      <label class="form-label form-label-required">Tipo de ajuste</label>
+                      <select class="select"><option>Merma / pérdida</option><option>Corrección inventario</option><option>Daño</option></select>
+                    </div>
+                    <div class="form-field">
+                      <label class="form-label form-label-required">Fecha</label>
+                      <input class="input" type="date" value="2026-06-28" />
+                    </div>
+                    <div class="form-field">
+                      <label class="form-label form-label-required">Responsable</label>
+                      <input class="input" type="text" value="Carlos Ruiz" />
+                    </div>
+                    <div class="form-field">
+                      <label class="form-label">Bodega</label>
+                      <select class="select"><option>Bodega principal</option></select>
+                    </div>
+                  </div>
+                  <div class="form-field">
+                    <label class="form-label form-label-required">Justificación</label>
+                    <textarea class="textarea">Conteo cíclico zona B-12: diferencia detectada en manillas acero inox por unidades dañadas en estantería.</textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-header">
+                  <strong data-zone="LIN">Líneas de ajuste</strong>
+                  <button class="btn btn-secondary btn-sm">+ Agregar línea</button>
+                </div>
+                <div class="table-wrap table-wrap--doc" style="border:none;border-radius:0;box-shadow:none">
+                  <div class="table-scroll">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>SKU</th>
+                          <th>Producto</th>
+                          <th>Stock sistema</th>
+                          <th>Stock físico</th>
+                          <th>Diferencia</th>
+                          <th>Ubicación</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td class="mono">001</td>
+                          <td class="mono">SKU-005110</td>
+                          <td>Manilla acero inox</td>
+                          <td class="mono">80</td>
+                          <td><input class="input mono" type="number" value="78" style="width:72px" /></td>
+                          <td class="mono" style="color:var(--danger)">−2</td>
+                          <td class="mono">B-12-04</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PRODUCTOS -->
+          <div class="screen" id="screen-productos">
+            <div class="page-header">
+              <div class="page-header-main">
+                <nav class="breadcrumbs" aria-label="Migas de pan">
+                  <a class="breadcrumb-item" href="#dashboard" data-goto="dashboard">Inicio</a>
+                  <span class="breadcrumb-sep">/</span>
+                  <span class="breadcrumb-item active">Productos</span>
+                </nav>
+                <div class="page-eyebrow">CAT · Productos</div>
+                <h1>Catálogo de productos</h1>
+              </div>
+              <div class="page-header-actions">
+                <button class="btn btn-secondary btn-sm">Importar</button>
+                <button class="btn btn-primary btn-sm">+ Nuevo producto</button>
+              </div>
+            </div>
+
+            <div class="filter-bar">
+              <div class="field" style="flex:2">
+                <label class="label">Buscar</label>
+                <div class="input-group">
+                  <span class="input-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></span>
+                  <input class="input" type="search" placeholder="SKU, nombre, categoría…" data-filter="q" aria-label="Buscar productos" />
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Categoría</label>
+                <select class="select" data-filter="category" aria-label="Filtrar por categoría">
+                  <option>Todas</option>
+                  <option>Ferretería</option>
+                  <option>Eléctrico</option>
+                  <option>Pinturas</option>
+                  <option>Herrajes</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="label">Estado stock</label>
+                <select class="select" data-filter="stock" aria-label="Filtrar por estado de stock">
+                  <option>Todos</option>
+                  <option>En stock</option>
+                  <option>Stock bajo</option>
+                  <option>Agotado</option>
+                </select>
+              </div>
+              <button type="button" class="btn btn-secondary" data-filter-submit>Filtrar</button>
+            </div>
+
+            <div class="table-wrap table-wrap--tall mt-4">
+              <div class="table-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>SKU</th>
+                      <th>Producto</th>
+                      <th>Categoría</th>
+                      <th>Stock</th>
+                      <th>Mín.</th>
+                      <th>Ubicación</th>
+                      <th>Estado</th>
+                      <th>Últ. mov.</th>
+                    </tr>
+                  </thead>
+                  <tbody data-region="productos-table" data-colspan="8" data-loading-label="Cargando catálogo…">
+                  </tbody>
+                </table>
+              </div>
+              <div class="pagination">
+                <span class="pagination-info" data-region="productos-pagination">1–6 de 1.247 productos</span>
+                <div class="pagination-btns">
+                  <button class="page-btn" disabled>‹</button>
+                  <button class="page-btn active">1</button>
+                  <button class="page-btn">2</button>
+                  <button class="page-btn">›</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop confirm-dialog" id="confirmBackdrop" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal">
+      <div class="modal-header"><strong id="confirmTitle">Confirmar anulación</strong></div>
+      <div class="modal-body">¿Estás seguro de anular este documento? Esta acción no se puede deshacer y revertirá los movimientos de stock asociados.</div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-confirm-close>Cancelar</button>
+        <button class="btn btn-danger" data-confirm-close data-toast="Documento anulado" data-toast-type="danger">Anular</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <script src="js/bodega-api.js"></script>
+  <script src="js/bodega-ui.js"></script>
+  <script src="js/bodega-shell.js"></script>
+</body>
+</html>

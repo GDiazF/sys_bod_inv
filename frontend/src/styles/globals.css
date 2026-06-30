@@ -1,0 +1,45 @@
+@import './tokens.css';
+@import './components.css';
+@import './primitives.css';
+@import './layout.css';
+@import './data.css';
+@import './document.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    @apply box-border;
+  }
+
+  html,
+  body,
+  #root {
+    @apply h-full overflow-hidden;
+  }
+
+  body {
+    @apply bg-bg text-fg font-body text-sm leading-normal antialiased;
+  }
+}
+
+@layer utilities {
+  .bg-content-grid {
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(var(--bg-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-position: center top;
+  }
+
+  @media (max-width: 768px) {
+    .bg-content-grid {
+      background-size: 24px 24px;
+    }
+  }
+}

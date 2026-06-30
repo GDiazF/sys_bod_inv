@@ -1,0 +1,166 @@
+/**
+ * Layout de página — portado de Proyecto/css/bodega-system.css
+ */
+
+@layer components {
+  .bx-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-5);
+  }
+
+  .bx-page-header__main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .bx-page-header__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+
+  .bx-page-header .bx-breadcrumbs {
+    margin-bottom: var(--space-3);
+  }
+
+  @media (max-width: 768px) {
+    .bx-page-header__actions {
+      width: 100%;
+    }
+
+    .bx-page-header__actions .bx-btn {
+      flex: 1;
+    }
+  }
+
+  .bx-page-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 5px 10px 5px 8px;
+    border: 1px solid var(--border-strong);
+    border-left: 3px solid var(--accent);
+    background: var(--surface-raised);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--steel);
+    margin-bottom: var(--space-3);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .bx-page-eyebrow::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    background: var(--accent);
+    border-radius: 1px;
+    flex-shrink: 0;
+  }
+
+  .bx-page-title {
+    font-family: var(--font-display);
+    font-size: clamp(24px, 3.2vw, 32px);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.15;
+    padding-left: var(--space-4);
+    border-left: 3px solid var(--steel-light);
+    position: relative;
+  }
+
+  .bx-page-title::before {
+    content: '';
+    position: absolute;
+    left: -3px;
+    top: 0;
+    width: 3px;
+    height: 32%;
+    min-height: 14px;
+    background: var(--accent);
+  }
+
+  .bx-page-lead {
+    color: var(--muted);
+    max-width: var(--content-readable);
+    margin-top: var(--space-3);
+    line-height: 1.65;
+    font-size: 14.5px;
+  }
+
+  .bx-breadcrumbs {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    font-size: 12px;
+    font-family: var(--font-mono);
+  }
+
+  .bx-breadcrumb-item {
+    color: var(--muted);
+    text-decoration: none;
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    transition: color 0.12s;
+  }
+
+  .bx-breadcrumb-item:hover {
+    color: var(--fg);
+  }
+
+  .bx-breadcrumb-item:focus-visible {
+    outline: 2px solid oklch(52% 0.16 148 / 0.55);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  .bx-breadcrumb-item--active {
+    color: var(--fg);
+    font-weight: 500;
+    cursor: default;
+  }
+
+  .bx-breadcrumb-sep {
+    color: var(--steel-mid);
+    font-size: 10px;
+    user-select: none;
+  }
+
+  .bx-main-content__inner {
+    width: 100%;
+    max-width: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bx-page-enter {
+      animation: bx-page-enter 0.2s ease both;
+    }
+
+    .bx-sidebar-drawer {
+      transition: transform 0.2s ease;
+    }
+  }
+
+  @keyframes bx-page-enter {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}

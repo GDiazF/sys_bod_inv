@@ -1,0 +1,92 @@
+/**
+ * BodegaX design tokens — copia fiel de Proyecto/css/bodega-system.css (:root)
+ * No añadir colores ni espaciados fuera de este archivo.
+ */
+:root {
+  --bg: oklch(97.5% 0.008 250);
+  --bg-grid: oklch(88% 0.014 250 / 0.28);
+  --surface: oklch(99% 0.004 250);
+  --surface-raised: oklch(100% 0 0);
+  --surface-inset: oklch(95.2% 0.012 250);
+  --fg: oklch(21% 0.024 250);
+  --muted: oklch(48% 0.02 250);
+  --border: oklch(89% 0.012 250);
+  --border-strong: oklch(80% 0.016 250);
+  --steel: oklch(34% 0.028 250);
+  --steel-mid: oklch(55% 0.022 250);
+  --steel-light: oklch(91% 0.014 250);
+  --accent: oklch(52% 0.16 148);
+  --accent-bright: oklch(58% 0.17 148);
+  --accent-muted: oklch(96% 0.035 148);
+  --accent-fg: oklch(100% 0 0);
+  --teal: oklch(46% 0.09 195);
+  --teal-bg: oklch(96% 0.025 195);
+  --warn: oklch(66% 0.14 72);
+  --warn-bg: oklch(97% 0.04 72);
+  --danger: oklch(50% 0.18 25);
+  --danger-bg: oklch(97% 0.03 25);
+  --success: oklch(52% 0.16 148);
+  --success-bg: oklch(96.5% 0.04 148);
+  --info: oklch(48% 0.11 240);
+  --info-bg: oklch(96.5% 0.025 240);
+
+  --sidebar-bg: oklch(98.5% 0.006 250);
+  --sidebar-surface: oklch(96% 0.01 250);
+  --sidebar-fg: oklch(24% 0.024 250);
+  --sidebar-muted: oklch(50% 0.018 250);
+  --sidebar-border: oklch(90% 0.012 250);
+  --sidebar-rail: oklch(76% 0.018 250);
+  --sidebar-accent: oklch(52% 0.16 148);
+
+  --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-body: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+
+  --sidebar-w: 252px;
+  --header-h: 60px;
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --shadow-sm: 0 1px 2px oklch(22% 0.02 250 / 0.05), 0 0 0 1px oklch(22% 0.02 250 / 0.03);
+  --shadow-md: 0 8px 24px oklch(22% 0.02 250 / 0.07), 0 2px 4px oklch(22% 0.02 250 / 0.04);
+  --shadow-panel: 0 1px 0 oklch(100% 0 0 / 0.85) inset, 0 1px 3px oklch(22% 0.02 250 / 0.05);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+
+  --content-gutter: var(--space-6);
+  --content-readable: 68ch;
+
+  /* Contrato scroll interno (tablas / paneles) */
+  --table-max-h: min(420px, calc(100vh - 260px));
+  --table-tall-max-h: min(440px, calc(100vh - 340px));
+  --panel-scroll-max-h: min(320px, calc(100vh - 380px));
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --content-gutter: var(--space-8);
+    --sidebar-w: 260px;
+    --table-max-h: min(520px, calc(100vh - 220px));
+    --panel-scroll-max-h: 360px;
+  }
+}
+
+@media (min-width: 1536px) {
+  :root {
+    --content-gutter: clamp(32px, 3vw, 48px);
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --sidebar-w: 0px;
+    --content-gutter: var(--space-4);
+  }
+}

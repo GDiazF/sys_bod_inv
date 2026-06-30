@@ -1,0 +1,125 @@
+/**
+ * Excepciones justificadas: pseudo-elementos y contrato scroll
+ * que Tailwind no expresa de forma declarativa.
+ */
+
+@layer components {
+  /* ── App shell scroll contract ── */
+  .bx-table-wrap {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+    max-height: var(--table-max-h);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-panel);
+  }
+
+  .bx-table-wrap--tall {
+    max-height: var(--table-tall-max-h);
+  }
+
+  .bx-table-scroll {
+    overflow: auto;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .bx-panel-scroll {
+    max-height: var(--panel-scroll-max-h);
+    overflow-y: auto;
+  }
+
+  /* ── Sidebar rail (identidad industrial) ── */
+  .bx-sidebar-rail {
+    position: relative;
+  }
+
+  .bx-sidebar-rail::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(
+      180deg,
+      var(--steel-light) 0%,
+      var(--sidebar-rail) 50%,
+      var(--steel-light) 100%
+    );
+    z-index: 2;
+  }
+
+  /* ── Brand mark clip-path ── */
+  .bx-brand-mark {
+    clip-path: polygon(0 0, 100% 0, 100% 72%, 82% 100%, 0 100%);
+  }
+
+  /* ── Topbar accent line ── */
+  .bx-topbar-accent::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: min(180px, 22%);
+    height: 2px;
+    background: var(--accent);
+  }
+
+  @media (max-width: 768px) {
+    .bx-topbar-accent::after {
+      width: 80px;
+    }
+  }
+
+  /* ── Tabla mínima (scaffold / dev) ── */
+  .bx-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .bx-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    text-align: left;
+    padding: 10px var(--space-4);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--steel);
+    background: var(--steel-light);
+    border-bottom: 2px solid var(--accent);
+    white-space: nowrap;
+  }
+
+  .bx-table tbody td {
+    padding: 10px var(--space-4);
+    border-bottom: 1px solid var(--border);
+    font-variant-numeric: tabular-nums;
+    background: var(--surface-raised);
+  }
+
+  .bx-table tbody tr:nth-child(even) td {
+    background: var(--surface-inset);
+  }
+
+  .bx-table tbody tr:hover td {
+    background: var(--accent-muted);
+  }
+
+  .bx-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .bx-table td.mono {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+  }
+}
