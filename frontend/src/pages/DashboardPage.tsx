@@ -20,7 +20,7 @@ import {
 import { dashboardHeaderActions } from '@/config/dashboard-actions'
 import { DATA_UI } from '@/config/data-ui'
 import { ROUTE_PAGE_META } from '@/config/chrome'
-import { ROUTES } from '@/config/routes'
+import { ROUTES, movimientoDetallePath } from '@/config/routes'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import {
   DOCUMENT_STATUS_BADGES,
@@ -127,7 +127,7 @@ export function DashboardPage() {
                     rows={data.activity}
                     rowKey={(row) => row.id}
                     caption={DATA_UI.dashboard.activityCaption}
-                    onRowClick={() => navigate(ROUTES.movimientoDetalle)}
+                    onRowClick={(row) => navigate(movimientoDetallePath(row.documento))}
                   />
                 </Panel>
               </div>

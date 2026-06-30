@@ -39,6 +39,17 @@ export const DATA_UI = {
     caption: 'Historial de movimientos de inventario',
     paginationLabel: 'movimientos',
   },
+  movimientoDetalle: {
+    loading: 'Cargando movimiento…',
+    emptyTitle: 'Movimiento no disponible',
+    emptyDescription: 'No se encontró información para mostrar.',
+    notFoundTitle: 'Movimiento no encontrado',
+    notFoundDescription: 'El identificador no corresponde a un movimiento registrado.',
+    errorTitle: 'Error al cargar movimiento',
+    errorDescription: 'No se pudo obtener el detalle. Intente de nuevo.',
+    backToList: 'Volver al listado',
+    linesCaption: 'Líneas del movimiento de inventario',
+  },
   productos: {
     loading: 'Cargando catálogo…',
     emptyTitle: 'Sin productos',

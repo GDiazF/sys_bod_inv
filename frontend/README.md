@@ -25,7 +25,7 @@ Abrir http://localhost:5173
 | `/` | Home: demo scroll interno (tabla + panel) |
 | `/dashboard` | Dashboard funcional inicial (mock, Fase 5) |
 | `/movimientos` | Listado funcional con filtros y paginación (mock, Fase 6) |
-| `/movimiento-detalle` | Esqueleto detalle (demo MOV-0042) |
+| `/movimientos/:id` | Detalle de movimiento (API + mocks, Fase API 3) |
 | `/productos` | Catálogo con filtros y paginación (API real o mocks, Fase API 1) |
 | `/recepcion` | Recepción REC-0089 funcional (mock, Fase 7) |
 | `/despacho` | Despacho DES-0034 funcional (mock, Fase 8) |

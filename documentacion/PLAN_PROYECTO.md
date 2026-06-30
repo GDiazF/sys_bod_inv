@@ -5,7 +5,7 @@ Basado en documentos técnicos 01–10 y desarrollo por fases acordado.
 
 **Última actualización:** junio 2026  
 **Estado backend:** Fases 0–7 + endurecimiento API — **completado**  
-**Estado frontend:** scaffold inicial (`frontend/`), **sin implementar**  
+**Estado frontend:** UI operativa con mocks + integración API parcial (Fases API 1–7: listados, dashboard, recepción, despacho y traslado)  
 **Tests:** 58 passed, 1 skipped (concurrencia numerador requiere PostgreSQL)
 
 ---
@@ -296,14 +296,135 @@ flowchart LR
 
 ## 7. Estado actual del frontend
 
-Existe carpeta `frontend/` con:
+Existe carpeta `frontend/` con aplicación React funcional:
 
-- Vite + React 19 + TypeScript + Tailwind 4
-- Dependencias: `axios`, `react-router-dom`
-- `App.tsx` con rutas planificadas (login, dashboard, productos, stock, solicitudes, compras)
-- **Faltan** los módulos referenciados (`auth/`, `components/`, `pages/`) — el scaffold **no compila** aún
+- Vite + React 19 + TypeScript + Tailwind 4 + React Router 7 + TanStack Query
+- Layout (`AppShell`), componentes UI/data/document, pantallas principales con mocks
+- Documentos operativos: **recepción**, **despacho** y **traslado** integrados con API; ajuste en mock (ver §7.1)
+- **Integración API real** en listados, detalle de movimiento y dashboard (ver §7.1)
 
-**No se ha iniciado la implementación funcional del frontend.**
+Pendiente: auth JWT en UI, CRUD maestros, flujos documentales contra API, tests E2E.
+
+### 7.1 Estado actual de integración API frontend
+
+**Estrategia general:** listados, detalles y dashboard se integran con DRF mediante **TanStack Query**, con adaptadores que mantienen los tipos usados en la UI (`ProductRow`, `MovementRow`, `MovementDetail`, `DashboardData`, etc.). La bandera `VITE_USE_API_MOCKS` permite trabajar desconectado del backend o usar mocks como fallback ante fallos de red.
+
+Los KPIs y paneles del dashboard se basan en los mismos datos que productos y movimientos (agregados desde endpoints existentes hasta que exista `/inventory/dashboard/`), por lo que el estado mostrado refleja la misma realidad que los listados conectados.
+
+| Pantalla | Hook | Capa API | Mock fallback |
+|----------|------|----------|---------------|
+| `/productos` | `hooks/useProductosList.ts` | `api/products.ts` → `fetchProducts()` | `mocks/products.ts` |
+| `/movimientos` | `hooks/useMovimientosList.ts` | `api/movements.ts` → `fetchMovements()` | `mocks/movements.ts` |
+| `/movimientos/:id` | `hooks/useMovementDetail.ts` | `api/movement-detail.ts` → `fetchMovementDetail()` | `mocks/movement-detail.ts` |
+| `/dashboard` | `hooks/useDashboardData.ts` | `api/dashboard.ts` → `fetchDashboard()` | `mocks/dashboard.ts` |
+| `/recepcion` | `hooks/useRecepcionDocument.ts` | `api/recepcion.ts` → `fetchRecepcion()` | `mocks/documents/recepcion.ts` |
+| `/despacho` | `hooks/useDespachoDocument.ts` | `api/despacho.ts` → `fetchDespacho()` | `mocks/documents/despacho.ts` |
+| `/traslado` | `hooks/useTrasladoDocument.ts` | `api/traslado.ts` → `fetchTraslado()` | `mocks/documents/traslado.ts` |
+
+**Patrón documentos:** Recepción, Despacho y Traslado usan `DocLayout` + `hooks/use{Tipo}Document` + `api/{tipo}.ts`, con `VITE_USE_API_MOCKS` como bandera para mocks o API real. Ajuste es el siguiente candidato. Recepción (REC) ↔ `operations/compras/`; Despacho (DES) ↔ `operations/entregas/`; Traslado (TRA) ↔ `operations/traslados/`.
+
+**Comportamiento común:**
+
+- `VITE_USE_API_MOCKS=true` → siempre mocks (delay ~550 ms, misma UX que antes).
+- `VITE_USE_API_MOCKS=false` → API real; si falla red/CORS/servidor caído → fallback silencioso a mocks (listados, detalle, dashboard y documentos recepción/despacho/traslado).
+- Errores HTTP 401/403/500 → estado error con Reintentar (sin fallback).
+- Detalle 404 → estado vacío “no encontrado” + volver al listado (sin fallback).
+
+#### `/productos` (Fase API 1)
+
+- Filtros UI → API: `search`, `categoria`, `stock`, `page`, `page_size=6`.
+- Stock/ubicación enriquecidos desde `/inventory/stock/`.
+
+#### `/movimientos` listado (Fase API 2)
+
+- Filtros UI → API: `search`, `created_at_desde` / `created_at_hasta`, `referencia_tipo` (Transferencia/Ajuste), `tipo_movimiento` (Entrada/Salida vía catálogo), `page`, `page_size=7`, `ordering=-created_at`.
+- Adaptador reutiliza mapas de `mocks/status-labels.ts` para badges.
+
+#### `/movimientos/:id` detalle (Fase API 3)
+
+- `GET /inventory/movimientos/{id}/` + enriquecimiento producto/bodegas/tipos.
+- UI: cabecera, resumen (`DocSummary`), tabla de líneas (`ScrollableTable`), timeline derivado del movimiento.
+- Backend expone **un producto por movimiento** → una línea en tabla; timeline/historial completo aún sin endpoint dedicado.
+- Navegación desde listado: `movimientoDetallePath(row.id)` en `config/routes.ts`.
+
+#### `/dashboard` (Fase API 4)
+
+- `fetchDashboard()` en `api/dashboard.ts` — sin endpoint dedicado aún; agrega KPIs y paneles desde stock, productos, movimientos y documentos operations.
+- **KPIs:** stock total, SKUs activos (+ movimientos del mes), conteo pendientes, conteo alertas.
+- **Paneles:** actividad reciente (6 movimientos), alertas de stock (agotado / bajo umbral), documentos pendientes (compras, entregas, traslados, ajustes en estados no finales).
+- Hook: `useDashboardData.ts` — TanStack Query, delay mock ~650 ms, mismos estados loading/empty/error.
+
+#### `/recepcion` (Fase API 5)
+
+- UI `REC-XXXX` ↔ backend `GET /operations/compras/{id}/` (Compra + detalles).
+- Resolución de documento: query `?id=` o la compra abierta más reciente (BORRADOR / PENDIENTE / APROBADO).
+- **Confirmar recepción:** `POST /operations/compras/{id}/confirmar/` (requiere estado APROBADO en backend).
+- **Guardar borrador:** estado local (PATCH cabecera/líneas **no expuesto** en DRF v1; `updateRecepcion()` preparado).
+- Cantidad recibida / ubicación / lote en UI son editables localmente; la confirmación usa cantidades del detalle en servidor.
+- Enriquecimiento: proveedores, bodegas, productos, ubicaciones (`support/ubicaciones/`).
+
+#### `/despacho` (Fase API 6)
+
+- UI `DES-XXXX` ↔ backend `GET /operations/entregas/{id}/` (Entrega + detalles).
+- Resolución: query `?id=` o primera entrega abierta (BORRADOR / PENDIENTE / APROBADO).
+- **Confirmar despacho:** `POST /operations/entregas/{id}/ejecutar/` (requiere estado APROBADO; no existe `confirmar/`).
+- **Guardar borrador:** estado local (PATCH no expuesto en DRF v1; `updateDespacho()` preparado).
+- Cliente/destino desde centro de costo; pedido desde solicitud vinculada; cant. comprometida desde solicitud si existe.
+- Cantidad a despachar / ubicación editables localmente; ejecución usa `cantidad_entregada` del servidor.
+
+#### `/traslado` (Fase API 7)
+
+- UI `TRA-XXXX` ↔ backend `GET /operations/traslados/{id}/` (Traslado + detalles).
+- Resolución: query `?id=` o primer traslado abierto (BORRADOR / PENDIENTE / APROBADO / EN_TRANSITO).
+- **Confirmar traslado:** `POST .../despachar/` si APROBADO; `POST .../recibir/` si EN_TRANSITO (no existe `ejecutar/` único).
+- **Guardar borrador:** estado local (PATCH no expuesto en DRF v1; `updateTraslado()` preparado).
+- Bodegas origen/destino y cantidades desde backend; ubicaciones enriquecidas desde `support/ubicaciones/`.
+- Cantidad a trasladar / ubicaciones editables localmente; despacho/recepción usan `cantidad_trasladada` del servidor.
+
+### 7.2 Cómo arrancar con API vs mocks
+
+Variables en `frontend/.env` (ver `.env.example`):
+
+| Variable | Uso |
+|----------|-----|
+| `VITE_API_BASE_URL` | Base API (default `/api/v1`; proxy Vite → Django en dev) |
+| `VITE_USE_API_MOCKS` | `true` = mocks; `false` = API real |
+| `VITE_API_ACCESS_TOKEN` | JWT Bearer para desarrollo |
+
+**Solo mocks (sin backend):**
+
+```env
+VITE_USE_API_MOCKS=true
+```
+
+```bash
+cd frontend && npm install && npm run dev
+```
+
+**Con API real:**
+
+```bash
+# Terminal 1 — backend
+set USE_SQLITE=1
+python manage.py runserver
+
+# Obtener token
+curl -X POST http://127.0.0.1:8000/api/v1/auth/token/ \
+  -H "Content-Type: application/json" \
+  -d "{\"email\":\"bodeguero-a@example.com\",\"password\":\"pass12345\"}"
+```
+
+```env
+# frontend/.env
+VITE_USE_API_MOCKS=false
+VITE_API_ACCESS_TOKEN=<access token>
+```
+
+```bash
+cd frontend && npm run dev
+```
+
+Documentación detallada de parámetros: `frontend/src/api/README.md`.
 
 ---
 
@@ -504,6 +625,8 @@ npm install
 npm run dev
 ```
 
+Ver §7.2 para alternar mocks vs API real.
+
 ---
 
 ## 11. Estructura del repositorio (actual)
@@ -519,7 +642,7 @@ Sis_inventario_doc/
 ├── support/                # numeradores, adjuntos + api/
 ├── api_tests/              # tests integración API
 ├── documentacion/          # docs negocio + este plan
-├── frontend/               # scaffold React (pendiente)
+├── frontend/               # React + Vite (UI + integración API parcial)
 ├── manage.py
 ├── requirements.txt
 └── schema.yaml             # export OpenAPI (opcional)
@@ -540,13 +663,19 @@ Sis_inventario_doc/
 - [ ] Usuario demo documentado en README
 - [ ] Despliegue prod configurado
 
-### Frontend ⬜ (pendiente)
+### Frontend 🟡 (en progreso)
 
 - [ ] Auth JWT + refresh
 - [ ] Layout + RBAC en UI
 - [ ] Maestros CRUD
-- [ ] Stock y movimientos
-- [ ] 5 flujos documentales
+- [x] Listado productos con API (`/productos`)
+- [x] Listado movimientos con API (`/movimientos`)
+- [x] Detalle movimiento con API (`/movimientos/:id`)
+- [x] Dashboard con API (`/dashboard`)
+- [x] Recepción con API parcial (`/recepcion` — lectura + confirmar; borrador local)
+- [x] Despacho con API parcial (`/despacho` — lectura + ejecutar; borrador local)
+- [x] Traslado con API parcial (`/traslado` — lectura + despachar/recibir; borrador local)
+- [ ] Ajuste con API
 - [ ] Admin básico
 - [ ] Tests E2E
 - [ ] Build producción

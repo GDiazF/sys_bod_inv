@@ -100,3 +100,87 @@ export async function apiGet<T>(
 
   return response.json() as Promise<T>
 }
+
+function jsonHeaders(): HeadersInit {
+  return {
+    ...authHeaders(),
+    'Content-Type': 'application/json',
+  }
+}
+
+export async function apiPost<T>(path: string, body?: unknown): Promise<T> {
+  let response: Response
+
+  try {
+    response = await fetch(buildUrl(path), {
+      method: 'POST',
+      headers: jsonHeaders(),
+      body: body === undefined ? undefined : JSON.stringify(body),
+    })
+  } catch {
+    throw new NetworkError()
+  }
+
+  if (!response.ok) {
+    let responseBody: unknown = null
+    try {
+      responseBody = await response.json()
+    } catch {
+      responseBody = null
+    }
+
+    const detail =
+      typeof responseBody === 'object' &&
+      responseBody !== null &&
+      'detail' in responseBody &&
+      typeof (responseBody as { detail: unknown }).detail === 'string'
+        ? (responseBody as { detail: string }).detail
+        : `Error HTTP ${response.status}`
+
+    throw new ApiError(detail, response.status, responseBody)
+  }
+
+  if (response.status === 204) {
+    return undefined as T
+  }
+
+  return response.json() as Promise<T>
+}
+
+/**
+ * PATCH genérico — preparado para cuando CompraViewSet exponga actualización parcial.
+ */
+export async function apiPatch<T>(path: string, body: unknown): Promise<T> {
+  let response: Response
+
+  try {
+    response = await fetch(buildUrl(path), {
+      method: 'PATCH',
+      headers: jsonHeaders(),
+      body: JSON.stringify(body),
+    })
+  } catch {
+    throw new NetworkError()
+  }
+
+  if (!response.ok) {
+    let responseBody: unknown = null
+    try {
+      responseBody = await response.json()
+    } catch {
+      responseBody = null
+    }
+
+    const detail =
+      typeof responseBody === 'object' &&
+      responseBody !== null &&
+      'detail' in responseBody &&
+      typeof (responseBody as { detail: unknown }).detail === 'string'
+        ? (responseBody as { detail: string }).detail
+        : `Error HTTP ${response.status}`
+
+    throw new ApiError(detail, response.status, responseBody)
+  }
+
+  return response.json() as Promise<T>
+}

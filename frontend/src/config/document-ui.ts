@@ -4,6 +4,8 @@ export const DOCUMENT_UI = {
     loading: 'Cargando recepción…',
     errorTitle: 'Recepción no disponible',
     errorDescription: 'No se pudo cargar el documento. Intente de nuevo.',
+    emptyTitle: 'Recepción no encontrada',
+    emptyDescription: 'No hay compras abiertas para recepcionar. Cree una en operaciones o use ?id= en la URL.',
     linesCaption: 'Líneas de recepción',
     addLine: 'Agregar línea',
     saveDraft: 'Guardar borrador',
@@ -53,6 +55,9 @@ export const DOCUMENT_UI = {
     loading: 'Cargando despacho…',
     errorTitle: 'Despacho no disponible',
     errorDescription: 'No se pudo cargar el documento. Intente de nuevo.',
+    emptyTitle: 'Despacho no encontrado',
+    emptyDescription:
+      'No hay entregas abiertas para despachar. Cree una en operaciones o use ?id= en la URL.',
     linesCaption: 'Líneas de despacho',
     addLine: 'Agregar línea',
     saveDraft: 'Guardar borrador',
@@ -101,6 +106,9 @@ export const DOCUMENT_UI = {
     loading: 'Cargando traslado…',
     errorTitle: 'Traslado no disponible',
     errorDescription: 'No se pudo cargar el documento. Intente de nuevo.',
+    emptyTitle: 'Traslado no encontrado',
+    emptyDescription:
+      'No hay traslados abiertos para mostrar. Cree uno en operaciones o use ?id= en la URL.',
     linesCaption: 'Líneas de traslado',
     addLine: 'Agregar línea',
     saveDraft: 'Guardar borrador',

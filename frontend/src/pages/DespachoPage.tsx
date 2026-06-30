@@ -54,6 +54,7 @@ export function DespachoPage() {
     isSaving,
     isConfirming,
     isReadOnly,
+    actionError,
   } = useDespachoDocument()
 
   const totals = useMemo(
@@ -202,9 +203,16 @@ export function DespachoPage() {
           onRetry: refetch,
           retryLabel: DATA_UI.dataView.retry,
         }}
+        empty={{
+          title: UI.emptyTitle,
+          description: UI.emptyDescription,
+        }}
       >
         {document ? (
           <DocLayout>
+            {actionError ? (
+              <p className="text-sm text-[var(--color-danger)]">{actionError}</p>
+            ) : null}
             <DocInfoStrip>
               <DocInfoItem label={UI.strip.client} value={document.header.client} />
               <DocInfoItem label={UI.strip.warehouse} value={warehouseLabel} />

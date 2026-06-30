@@ -12,6 +12,8 @@ export type TrasladoLine = {
   lineStatus: DocumentLineStatus
   originLocationOptions: SelectOption[]
   destLocationOptions: SelectOption[]
+  /** Id del detalle Traslado en API (solo modo real). */
+  detalleId?: number
 }
 
 export type TrasladoHeader = Omit<DocumentHeaderBase, 'warehouse'> & {
@@ -24,6 +26,10 @@ export type TrasladoHeader = Omit<DocumentHeaderBase, 'warehouse'> & {
 }
 
 export type TrasladoDocument = {
+  /** Id Traslado en API (solo modo real). */
+  trasladoId?: number
+  /** Estado crudo DRF para acciones (solo modo real). */
+  estadoCodigo?: string
   header: TrasladoHeader
   lines: TrasladoLine[]
 }

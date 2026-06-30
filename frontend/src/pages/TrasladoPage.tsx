@@ -56,6 +56,7 @@ export function TrasladoPage() {
     isSaving,
     isConfirming,
     isReadOnly,
+    actionError,
   } = useTrasladoDocument()
 
   const totals = useMemo(
@@ -236,9 +237,16 @@ export function TrasladoPage() {
           onRetry: refetch,
           retryLabel: DATA_UI.dataView.retry,
         }}
+        empty={{
+          title: UI.emptyTitle,
+          description: UI.emptyDescription,
+        }}
       >
         {document ? (
           <DocLayout>
+            {actionError ? (
+              <p className="text-sm text-[var(--color-danger)]">{actionError}</p>
+            ) : null}
             <DocInfoStrip>
               <DocInfoItem label={UI.strip.warehouseOrigin} value={originLabel} />
               <DocInfoItem label={UI.strip.warehouseDest} value={destLabel} />

@@ -54,6 +54,7 @@ export function RecepcionPage() {
     isSaving,
     isConfirming,
     isReadOnly,
+    actionError,
   } = useRecepcionDocument()
 
   const totals = useMemo(
@@ -235,9 +236,16 @@ export function RecepcionPage() {
           onRetry: refetch,
           retryLabel: DATA_UI.dataView.retry,
         }}
+        empty={{
+          title: UI.emptyTitle,
+          description: UI.emptyDescription,
+        }}
       >
         {document ? (
           <DocLayout>
+            {actionError ? (
+              <p className="text-sm text-[var(--color-danger)]">{actionError}</p>
+            ) : null}
             <DocInfoStrip>
               <DocInfoItem label={UI.strip.date} value={document.header.date} mono />
               <DocInfoItem label={UI.strip.supplier} value={supplierLabel} />

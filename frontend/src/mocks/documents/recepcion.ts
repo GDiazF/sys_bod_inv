@@ -11,6 +11,8 @@ export type RecepcionLine = {
   batch: string
   lineStatus: DocumentLineStatus
   locationOptions: SelectOption[]
+  /** Id del detalle Compra en API (solo modo real). */
+  detalleId?: number
 }
 
 export type RecepcionHeader = DocumentHeaderBase & {
@@ -21,6 +23,8 @@ export type RecepcionHeader = DocumentHeaderBase & {
 }
 
 export type RecepcionDocument = {
+  /** Id Compra en API (solo modo real). */
+  compraId?: number
   header: RecepcionHeader
   lines: RecepcionLine[]
 }

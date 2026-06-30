@@ -10,6 +10,8 @@ export type DespachoLine = {
   location: string
   lineStatus: DocumentLineStatus
   locationOptions: SelectOption[]
+  /** Id del detalle Entrega en API (solo modo real). */
+  detalleId?: number
 }
 
 export type DespachoHeader = DocumentHeaderBase & {
@@ -22,6 +24,8 @@ export type DespachoHeader = DocumentHeaderBase & {
 }
 
 export type DespachoDocument = {
+  /** Id Entrega en API (solo modo real). */
+  entregaId?: number
   header: DespachoHeader
   lines: DespachoLine[]
 }

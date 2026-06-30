@@ -13,12 +13,11 @@ import { DATA_UI } from '@/config/data-ui'
 import { ROUTE_PAGE_META } from '@/config/chrome'
 import {
   MOVIMIENTO_TIPO_OPTIONS,
-  MOVIMIENTOS_FILTER_DEFAULTS,
 } from '@/config/filter-options'
 import { movimientosHeaderActions } from '@/config/list-actions'
-import { ROUTES } from '@/config/routes'
-import { usePaginatedMockList } from '@/hooks/usePaginatedMockList'
-import { queryMovements, type MovementRow } from '@/mocks/movements'
+import { ROUTES, movimientoDetallePath } from '@/config/routes'
+import { useMovimientosList } from '@/hooks/useMovimientosList'
+import { type MovementRow } from '@/mocks/movements'
 import {
   formatMovementQty,
   MOVEMENT_LIST_STATUS_BADGES,
@@ -29,11 +28,7 @@ export function MovimientosPage() {
   const navigate = useNavigate()
   const meta = ROUTE_PAGE_META.movimientos
 
-  const list = usePaginatedMockList({
-    queryFn: queryMovements,
-    initialFilters: MOVIMIENTOS_FILTER_DEFAULTS,
-    pageSize: 7,
-  })
+  const list = useMovimientosList(7)
 
   const columns = useMemo<DataTableColumn<MovementRow>[]>(
     () => [
@@ -156,7 +151,7 @@ export function MovimientosPage() {
               rows={list.result.items}
               rowKey={(row) => row.id}
               caption={DATA_UI.movimientos.caption}
-              onRowClick={() => navigate(ROUTES.movimientoDetalle)}
+              onRowClick={(row) => navigate(movimientoDetallePath(row.id))}
             />
             <Pagination
               page={list.page}

@@ -1,14 +1,34 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useSearchParams } from 'react-router-dom'
+import {
+  confirmRecepcion,
+  fetchRecepcion,
+  resolveRecepcionCompraId,
+} from '@/api/recepcion'
+import { ApiError, isNetworkOrConfigError } from '@/api/client'
 import type { DataViewStatus } from '@/components/data/DataView'
+import { USE_API_MOCKS } from '@/config/env'
 import {
   cloneRecepcion,
   MOCK_RECEPCION,
   type RecepcionDocument,
 } from '@/mocks/documents/recepcion'
-import type { DocumentStatus } from '@/mocks/documents/types'
 
 const MOCK_DELAY_MS = 550
 const ACTION_DELAY_MS = 900
+
+type RecepcionQueryResult = {
+  document: RecepcionDocument | null
+  usedMockFallback: boolean
+  notFound: boolean
+}
+
+export type UseRecepcionDocumentOptions = {
+  simulateError?: boolean
+  simulateEmpty?: boolean
+  documentId?: string | number
+}
 
 export type UseRecepcionDocumentResult = {
   status: DataViewStatus
@@ -20,37 +40,140 @@ export type UseRecepcionDocumentResult = {
   isSaving: boolean
   isConfirming: boolean
   isReadOnly: boolean
+  isUsingMockFallback: boolean
+  isNotFound: boolean
+  actionError: string | null
 }
 
-export function useRecepcionDocument(): UseRecepcionDocumentResult {
-  const [status, setStatus] = useState<DataViewStatus>('loading')
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, ms)
+  })
+}
+
+async function loadRecepcionDocument(
+  explicitId: string | undefined,
+  simulateError: boolean,
+  simulateEmpty: boolean,
+): Promise<RecepcionQueryResult> {
+  if (simulateError) {
+    throw new Error('Error simulado en recepción')
+  }
+
+  if (simulateEmpty) {
+    await delay(MOCK_DELAY_MS)
+    return {
+      document: null,
+      usedMockFallback: true,
+      notFound: true,
+    }
+  }
+
+  if (USE_API_MOCKS) {
+    await delay(MOCK_DELAY_MS)
+    return {
+      document: cloneRecepcion(MOCK_RECEPCION),
+      usedMockFallback: true,
+      notFound: false,
+    }
+  }
+
+  try {
+    const compraId = await resolveRecepcionCompraId(explicitId)
+    if (compraId === null) {
+      return {
+        document: null,
+        usedMockFallback: false,
+        notFound: true,
+      }
+    }
+
+    const document = await fetchRecepcion(compraId)
+    return {
+      document,
+      usedMockFallback: false,
+      notFound: false,
+    }
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return {
+        document: null,
+        usedMockFallback: false,
+        notFound: true,
+      }
+    }
+
+    if (isNetworkOrConfigError(error)) {
+      await delay(MOCK_DELAY_MS)
+      return {
+        document: cloneRecepcion(MOCK_RECEPCION),
+        usedMockFallback: true,
+        notFound: false,
+      }
+    }
+
+    throw error
+  }
+}
+
+function toDataViewStatus(
+  isLoading: boolean,
+  isError: boolean,
+  result: RecepcionQueryResult | undefined,
+  simulateEmpty: boolean,
+): DataViewStatus {
+  if (isLoading) {
+    return 'loading'
+  }
+
+  if (isError) {
+    return 'error'
+  }
+
+  if (!result || result.notFound || simulateEmpty || !result.document) {
+    return 'empty'
+  }
+
+  return 'success'
+}
+
+export function useRecepcionDocument(
+  options: UseRecepcionDocumentOptions = {},
+): UseRecepcionDocumentResult {
+  const { simulateError = false, simulateEmpty = false, documentId } = options
+  const [searchParams] = useSearchParams()
+  const queryClient = useQueryClient()
+
+  const explicitId = documentId !== undefined ? String(documentId) : (searchParams.get('id') ?? undefined)
+
   const [document, setDocument] = useState<RecepcionDocument | null>(null)
-  const [fetchKey, setFetchKey] = useState(0)
   const [isSaving, setIsSaving] = useState(false)
   const [isConfirming, setIsConfirming] = useState(false)
+  const [actionError, setActionError] = useState<string | null>(null)
 
-  const refetch = useCallback(() => {
-    setFetchKey((current) => current + 1)
-  }, [])
+  const queryKey = useMemo(
+    () => ['recepcion', explicitId, USE_API_MOCKS, simulateError, simulateEmpty] as const,
+    [explicitId, simulateError, simulateEmpty],
+  )
+
+  const query = useQuery({
+    queryKey,
+    queryFn: () => loadRecepcionDocument(explicitId, simulateError, simulateEmpty),
+    placeholderData: (previous) => previous,
+  })
 
   useEffect(() => {
-    let cancelled = false
-    setStatus('loading')
-    setDocument(null)
-
-    const timer = window.setTimeout(() => {
-      if (cancelled) {
-        return
-      }
-      setDocument(cloneRecepcion(MOCK_RECEPCION))
-      setStatus('success')
-    }, MOCK_DELAY_MS)
-
-    return () => {
-      cancelled = true
-      window.clearTimeout(timer)
+    if (query.data?.document) {
+      setDocument(cloneRecepcion(query.data.document))
+    } else if (query.data?.notFound) {
+      setDocument(null)
     }
-  }, [fetchKey])
+  }, [query.data])
+
+  const refetch = useCallback(() => {
+    setActionError(null)
+    void query.refetch()
+  }, [query])
 
   const saveDraft = useCallback(async () => {
     if (!document || isSaving || isConfirming) {
@@ -58,20 +181,31 @@ export function useRecepcionDocument(): UseRecepcionDocumentResult {
     }
 
     setIsSaving(true)
-    await new Promise((resolve) => window.setTimeout(resolve, ACTION_DELAY_MS))
-    setDocument((current) =>
-      current
-        ? {
-            ...current,
-            header: {
-              ...current.header,
-              status: nextDraftStatus(current.header.status),
-            },
-          }
-        : current,
-    )
-    setIsSaving(false)
-  }, [document, isConfirming, isSaving])
+    setActionError(null)
+
+    try {
+      if (USE_API_MOCKS) {
+        await delay(ACTION_DELAY_MS)
+        setDocument((current) =>
+          current
+            ? {
+                ...current,
+                header: { ...current.header, status: current.header.status },
+              }
+            : current,
+        )
+      } else {
+        // PATCH /operations/compras/{id}/ no existe en v1: el borrador vive en estado local.
+        await delay(ACTION_DELAY_MS)
+      }
+    } catch (error) {
+      const message =
+        error instanceof ApiError ? error.message : 'No se pudo guardar el borrador.'
+      setActionError(message)
+    } finally {
+      setIsSaving(false)
+    }
+  }, [document, isConfirming, isSaving, queryClient])
 
   const confirmDocument = useCallback(async () => {
     if (!document || isSaving || isConfirming) {
@@ -79,18 +213,36 @@ export function useRecepcionDocument(): UseRecepcionDocumentResult {
     }
 
     setIsConfirming(true)
-    await new Promise((resolve) => window.setTimeout(resolve, ACTION_DELAY_MS))
-    setDocument((current) =>
-      current
-        ? {
-            ...current,
-            header: { ...current.header, status: 'confirmado' },
-          }
-        : current,
-    )
-    setIsConfirming(false)
-  }, [document, isConfirming, isSaving])
+    setActionError(null)
 
+    try {
+      if (USE_API_MOCKS) {
+        await delay(ACTION_DELAY_MS)
+        setDocument((current) =>
+          current
+            ? {
+                ...current,
+                header: { ...current.header, status: 'confirmado' },
+              }
+            : current,
+        )
+      } else if (document.compraId) {
+        const updated = await confirmRecepcion(document.compraId)
+        setDocument(cloneRecepcion(updated))
+        await queryClient.invalidateQueries({ queryKey: ['recepcion'] })
+      }
+    } catch (error) {
+      const message =
+        error instanceof ApiError
+          ? error.message
+          : 'No se pudo confirmar la recepción.'
+      setActionError(message)
+    } finally {
+      setIsConfirming(false)
+    }
+  }, [document, isConfirming, isSaving, queryClient])
+
+  const status = toDataViewStatus(query.isLoading, query.isError, query.data, simulateEmpty)
   const isReadOnly = document?.header.status === 'confirmado'
 
   return {
@@ -103,12 +255,8 @@ export function useRecepcionDocument(): UseRecepcionDocumentResult {
     isSaving,
     isConfirming,
     isReadOnly,
+    isUsingMockFallback: query.data?.usedMockFallback ?? USE_API_MOCKS,
+    isNotFound: query.data?.notFound ?? false,
+    actionError,
   }
-}
-
-function nextDraftStatus(current: DocumentStatus): DocumentStatus {
-  if (current === 'confirmado') {
-    return current
-  }
-  return current === 'borrador' ? 'borrador' : current
 }

@@ -10,7 +10,7 @@ export const ROUTES = {
 
   movimientos: '/movimientos',
 
-  movimientoDetalle: '/movimiento-detalle',
+  movimientoDetalle: '/movimientos/:id',
 
   productos: '/productos',
 
@@ -81,7 +81,6 @@ export const APP_MAIN_ROUTES: readonly AppMainRoute[] = [
   { id: 'movimientos', path: ROUTES.movimientos, label: 'Movimientos' },
 
   { id: 'movimiento-detalle', path: ROUTES.movimientoDetalle, label: 'Detalle movimiento' },
-
   { id: 'productos', path: ROUTES.productos, label: 'Productos' },
 
   { id: 'recepcion', path: ROUTES.recepcion, label: 'Recepción' },
@@ -94,7 +93,19 @@ export const APP_MAIN_ROUTES: readonly AppMainRoute[] = [
 
 ] as const
 
+export function movimientoDetallePath(id: string | number): string {
+  if (typeof id === 'number') {
+    return `/movimientos/${id}`
+  }
 
+  const trimmed = id.trim()
+  if (/^\d+$/.test(trimmed)) {
+    return `/movimientos/${Number(trimmed)}`
+  }
+
+  const match = /^MOV-0*(\d+)$/i.exec(trimmed)
+  return match ? `/movimientos/${Number(match[1])}` : ROUTES.movimientos
+}
 
 export const APP_ROUTE_IDS: AppRouteId[] = APP_MAIN_ROUTES.map((route) => route.id)
 
